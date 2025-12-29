@@ -61,7 +61,7 @@ const AdminDashboard = () => {
     };
 
     const exportCSV = () => {
-        const headers = ['Date', 'Time', 'Username', 'Role', 'Latitude', 'Longitude', 'Photo URL'];
+        const headers = ['Date', 'Time', 'Username', 'Role', 'Latitude', 'Longitude', 'Location Link', 'Photo URL'];
         const csvContent = [
             headers.join(','),
             ...records.map(r => [
@@ -71,6 +71,7 @@ const AdminDashboard = () => {
                 r.userId?.role || 'member',
                 r.latitude || 'N/A',
                 r.longitude || 'N/A',
+                (r.latitude && r.longitude) ? `https://www.google.com/maps?q=${r.latitude},${r.longitude}` : 'N/A',
                 r.photo
             ].join(','))
         ].join('\n');
