@@ -51,7 +51,8 @@ app.use('/api/holidays', require('./routes/holidayRoutes'));
 app.use('/api/id-card', require('./routes/idCardRoutes'));
 
 // Serve the main page for all non-api routes (SPA support)
-app.get('(.*)', (req, res, next) => {
+// Serve the main page for all non-api routes (SPA support)
+app.get(['/', '/:slug(.*)'], (req, res, next) => {
   if (req.path.startsWith('/api')) {
     return next();
   }
