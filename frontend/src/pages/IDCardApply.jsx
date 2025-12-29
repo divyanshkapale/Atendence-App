@@ -91,7 +91,7 @@ const IDCardApply = () => {
                     if (path.startsWith('http') || path.startsWith('data:')) return path;
                     const normalized = path.replace(/\\/g, '/');
                     if (normalized.includes('uploads/')) {
-                        return `http://localhost:3000/uploads/${normalized.split('uploads/')[1]}`;
+                        return `/uploads/${normalized.split('uploads/')[1]}`;
                     }
                     return path;
                 };
