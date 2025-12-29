@@ -185,12 +185,25 @@ const IDCardApply = () => {
         if (!element) return;
 
         try {
-            // Wait a moment for images to load
+            // Pre-load images with CORS headers to ensure they are capture-ready
+            const images = Array.from(element.getElementsByTagName('img'));
+            await Promise.all(images.map(img => {
+                if (img.complete) return Promise.resolve();
+                return new Promise(resolve => {
+                    const temp = new Image();
+                    temp.crossOrigin = 'anonymous';
+                    temp.onload = resolve;
+                    temp.onerror = resolve; // Continue even if error
+                    temp.src = img.src;
+                });
+            }));
+
+            // Small delay for rendering
             await new Promise(resolve => setTimeout(resolve, 500));
 
             const dataUrl = await toPng(element, {
                 quality: 1.0,
-                pixelRatio: 3, // Higher resolution
+                pixelRatio: 3,
                 cacheBust: true,
                 skipAutoScale: true
             });
@@ -200,7 +213,7 @@ const IDCardApply = () => {
             link.click();
         } catch (error) {
             console.error('Could not generate image:', error);
-            alert('Failed to download image. Try using a newer browser or refreshing.');
+            alert('Failed to download image. Please try again.');
         }
     };
 
