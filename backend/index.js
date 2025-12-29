@@ -11,6 +11,9 @@ const connectMongoDB = require('./config/db');
 const app = express();
 const port = process.env.PORT || 3000;
 
+// Trust proxy is required for secure cookies on Render/Heroku
+app.set('trust proxy', 1);
+
 // Middleware
 app.use(cors({
   origin: true,
@@ -24,8 +27,8 @@ app.use(express.static(path.join(__dirname, '../frontend/dist')));
 
 // Rate limiting
 const uploadLimit = rateLimit({
-  windowMs: 24 * 60 * 60 * 1000, // 24 hours
-  max: 1, // limit each user to 1 photo per day
+  windowMs: 24 * 60 * 60 * 1000,
+  max: 1,
   message: { error: 'You can only upload one photo per day' },
   standardHeaders: true,
   legacyHeaders: false,
@@ -37,9 +40,6 @@ fs.ensureDirSync(uploadsDir);
 
 // Connect to MongoDB
 connectMongoDB();
-
-// Connect to MongoDB
-
 
 // Routes
 const authRoutes = require('./routes/auth');
