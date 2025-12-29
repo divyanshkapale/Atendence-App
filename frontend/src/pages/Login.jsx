@@ -23,6 +23,8 @@ const Login = () => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
+    const [isAdminLogin, setIsAdminLogin] = useState(false);
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
@@ -55,7 +57,7 @@ const Login = () => {
                 setError('Registration failed. Please try again.');
             }
         } else {
-            // Standard Login (Username/Enrollment/Mobile + Password)
+            // Standard Login (works for both Admin and Member due to backend logic, but UI differs)
             try {
                 await login(formData.username, formData.password);
                 navigate('/');
@@ -95,15 +97,15 @@ const Login = () => {
                 <div className="card-body">
                     <div className="text-center mb-4">
                         <div className="avatar placeholder mb-2">
-                            <div className="bg-primary text-primary-content rounded-full w-12">
+                            <div className={`text-primary-content rounded-full w-12 flex items-center justify-center ${isAdminLogin ? 'bg-secondary' : 'bg-primary'}`}>
                                 <LogIn size={24} />
                             </div>
                         </div>
                         <h2 className="card-title justify-center text-2xl font-bold text-base-content">
-                            {isRegistering ? 'Create Account' : 'Welcome Back'}
+                            {isRegistering ? 'Create Account' : isAdminLogin ? 'Admin Login' : 'Student Login'}
                         </h2>
                         <p className="text-base-content/60 text-sm">
-                            {isRegistering ? 'Register to get started' : 'Sign in with your credentials'}
+                            {isRegistering ? 'Register to get started' : isAdminLogin ? 'Enter admin credentials' : 'Sign in with Enrollment or Mobile'}
                         </p>
                     </div>
 
@@ -118,11 +120,26 @@ const Login = () => {
                         </div>
                     )}
 
+                    {!isRegistering && (
+                        <div className="tabs tabs-boxed justify-center mb-4 bg-base-200">
+                            <a
+                                className={`tab ${!isAdminLogin ? 'tab-active' : ''}`}
+                                onClick={() => { setIsAdminLogin(false); setError(''); }}
+                            >Student</a>
+                            <a
+                                className={`tab ${isAdminLogin ? 'tab-active' : ''}`}
+                                onClick={() => { setIsAdminLogin(true); setError(''); }}
+                            >Admin</a>
+                        </div>
+                    )}
+
                     <form onSubmit={handleSubmit} className="space-y-4">
                         {!isRegistering && (
                             <div className="form-control">
                                 <label className="label py-1">
-                                    <span className="label-text font-semibold">Enrollment or Mobile Number</span>
+                                    <span className="label-text font-semibold">
+                                        {isAdminLogin ? 'Username' : 'Enrollment or Mobile Number'}
+                                    </span>
                                 </label>
                                 <div className="relative">
                                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-base-content/50">
@@ -134,7 +151,7 @@ const Login = () => {
                                         className="input input-bordered w-full pl-10"
                                         value={formData.username}
                                         onChange={handleChange}
-                                        placeholder="Enter Enrollment or Mobile No."
+                                        placeholder={isAdminLogin ? "Enter Admin Username" : "Enter Enrollment or Mobile No."}
                                         required
                                     />
                                 </div>
@@ -242,7 +259,7 @@ const Login = () => {
                             type="submit"
                             className="btn btn-primary w-full mt-4"
                         >
-                            <span>{isRegistering ? 'Register' : 'Sign In'}</span>
+                            <span>{isRegistering ? 'Register' : isAdminLogin ? 'Admin Login' : 'Login'}</span>
                             <LogIn size={18} />
                         </button>
                     </form>
@@ -253,6 +270,7 @@ const Login = () => {
                         <button
                             onClick={() => {
                                 setIsRegistering(!isRegistering);
+                                setIsAdminLogin(false); // Reset admin state when switching reg
                                 setError('');
                                 setSuccessMsg('');
                             }}
