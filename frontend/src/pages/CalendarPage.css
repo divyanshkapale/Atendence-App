@@ -1,0 +1,85 @@
+.react-calendar {
+  width: 100%;
+  background: transparent;
+  border: none;
+  font-family: inherit;
+}
+
+.react-calendar__tile {
+  padding: 1.5em 0.5em;
+  border-radius: 0.5rem;
+}
+
+.react-calendar__tile:enabled:hover,
+.react-calendar__tile:enabled:focus {
+  background-color: hsl(var(--p) / 0.1);
+}
+
+.react-calendar__tile--now {
+  background: hsl(var(--s) / 0.2);
+  color: hsl(var(--s));
+  font-weight: bold;
+}
+
+.react-calendar__tile--now:enabled:hover,
+.react-calendar__tile--now:enabled:focus {
+  background: hsl(var(--s) / 0.3);
+}
+
+.react-calendar__tile--active {
+  background-color: #3b82f6 !important;
+  /* Blue-500 */
+  color: white !important;
+}
+
+.react-calendar__tile--active:enabled:hover,
+.react-calendar__tile--active:enabled:focus {
+  background-color: #2563eb !important;
+  /* Blue-600 */
+}
+
+/* Ensure holiday tiles keep their yellow background even when active/selected */
+.react-calendar__tile.holiday-tile {
+  background-color: rgb(234 179 8) !important;
+  /* bg-yellow-500 */
+  color: black !important;
+}
+
+.react-calendar__tile.holiday-tile:enabled:hover,
+.react-calendar__tile.holiday-tile:enabled:focus {
+  background-color: rgb(202 138 4) !important;
+  /* bg-yellow-600 */
+}
+
+/* Ensure present tiles keep their green background even when active/selected */
+.react-calendar__tile.present-tile {
+  background-color: rgb(34 197 94) !important;
+  /* bg-green-500 */
+  color: white !important;
+}
+
+.react-calendar__tile.present-tile:enabled:hover,
+.react-calendar__tile.present-tile:enabled:focus {
+  background-color: rgb(22 163 74) !important;
+  /* bg-green-600 */
+}
+
+.react-calendar__navigation button {
+  min-width: 44px;
+  background: none;
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.react-calendar__navigation button:enabled:hover,
+.react-calendar__navigation button:enabled:focus {
+  background-color: hsl(var(--b2));
+}
+
+.react-calendar__month-view__weekdays {
+  text-align: center;
+  text-transform: uppercase;
+  font-weight: bold;
+  font-size: 0.75em;
+  opacity: 0.7;
+}
