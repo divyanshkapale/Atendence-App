@@ -125,7 +125,7 @@ const Login = () => {
                             {isRegistering ? 'Create Account' : isQuickLogin ? 'Quick Access' : 'Welcome Back'}
                         </h2>
                         <p className="text-base-content/60 text-sm">
-                            {isRegistering ? 'Register to get started' : isQuickLogin ? 'Enter Enrollment Number' : 'Sign in to continue'}
+                            {isRegistering ? 'Register to get started' : isQuickLogin ? 'Use Enrollment No. or Mobile' : 'Sign in to continue'}
                         </p>
                     </div>
 
@@ -166,7 +166,7 @@ const Login = () => {
                         {(isRegistering || isQuickLogin) && (
                             <div className="form-control">
                                 <label className="label py-1">
-                                    <span className="label-text font-semibold">Enrollment Number</span>
+                                    <span className="label-text font-semibold">Enrollment or Mobile Number</span>
                                 </label>
                                 <input
                                     type="text"
@@ -174,7 +174,7 @@ const Login = () => {
                                     className="input input-bordered w-full"
                                     value={formData.enrollmentNumber}
                                     onChange={handleChange}
-                                    placeholder="Enter enrollment no."
+                                    placeholder="Enter Enrollment or Mobile No."
                                     required
                                 />
                             </div>

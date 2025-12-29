@@ -75,11 +75,18 @@ router.post('/signup', async (req, res) => {
 router.post('/login-enrollment', async (req, res) => {
     try {
         const { enrollmentNumber } = req.body;
-        if (!enrollmentNumber) return res.status(400).json({ error: 'Enrollment Number required' });
+        if (!enrollmentNumber) return res.status(400).json({ error: 'Enrollment Number or Phone Number required' });
 
-        const user = await User.findOne({ enrollmentNumber });
+        // Search by Enrollment Number OR Contact Number
+        const user = await User.findOne({
+            $or: [
+                { enrollmentNumber: enrollmentNumber }, // exact match
+                { contactNumber: enrollmentNumber }     // input might be phone number
+            ]
+        });
+
         if (!user) {
-            return res.status(404).json({ error: 'Student not found with this enrollment number' });
+            return res.status(404).json({ error: 'Student not found with this ID or Phone Number' });
         }
 
         const token = jwt.sign({ userId: user._id }, JWT_SECRET, { expiresIn: '24h' });
