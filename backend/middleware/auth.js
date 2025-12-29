@@ -16,13 +16,11 @@ const authenticateToken = async (req, res, next) => {
                     return next();
                 }
             } catch (err) {
-                // Token verification failed, fall through to demo user
+                // Token verification failed
             }
         }
 
-        if (!user) {
-            return res.status(401).json({ error: 'Invalid token. User not found.' });
-        }
+        return res.status(401).json({ error: 'Access denied. Please login.' });
 
         req.user = user;
         next();

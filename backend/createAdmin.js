@@ -6,23 +6,34 @@ const MONGO_URI = process.env.MONGO_URI || process.env.MONGODB_URI || 'mongodb:/
 
 async function createAdmin() {
   try {
-    await mongoose.connect(MONGO_URI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true
-    });
+    const maskedUri = MONGO_URI.replace(/\/\/[^:]+:[^@]+@/, '//***:***@');
+    console.log(`🔌 Connecting to: ${maskedUri}`);
+
+    await mongoose.connect(MONGO_URI); // Simplified connect for Mongoose 6+
     console.log("✅ MongoDB connected");
 
-    // create admin user
-    const admin = new User({
-      username: "adminUser",
-      password: "admin123",  // plain text, will be hashed automatically
-      role: "admin"
-    });
+    const username = "adminUser";
+    let admin = await User.findOne({ username });
+
+    if (admin) {
+      console.log("⚠️ Admin user already exists. Updating password...");
+      admin.password = "admin123";
+      admin.role = "admin";
+    } else {
+      console.log("🆕 Creating new admin user...");
+      admin = new User({
+        username,
+        password: "admin123",
+        role: "admin"
+      });
+    }
 
     await admin.save();
-    console.log("🎉 Admin created:", admin);
+    console.log("🎉 Admin user ready!");
+    console.log("👉 Username: adminUser");
+    console.log("👉 Password: admin123");
 
-    mongoose.connection.close();
+    await mongoose.connection.close();
   } catch (err) {
     console.error("❌ Error creating admin:", err);
   }
