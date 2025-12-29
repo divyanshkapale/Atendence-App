@@ -19,7 +19,7 @@ const IDCardPreview = ({ studentData, institutionData, status, approvalDate, dis
         const normalized = path.replace(/\\/g, '/');
         if (normalized.includes('uploads/')) {
             const cleanPath = normalized.split('uploads/')[1];
-            return `http://localhost:3000/uploads/${cleanPath}`;
+            return `/uploads/${cleanPath}`;
         }
         return path; // Fallback
     };
