@@ -2,17 +2,16 @@ const mongoose = require('mongoose');
 
 const connectMongoDB = async () => {
     const mongoOptions = {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
         serverSelectionTimeoutMS: 5000,
         socketTimeoutMS: 45000,
         maxPoolSize: 10,
     };
 
-    // Prioritize local connection as requested
+    // Prioritize environment variables for production
     const mongoURIs = [
-        'mongodb://127.0.0.1:27017/attendance_db',
         process.env.MONGODB_URI,
+        process.env.MONGO_URI,
+        'mongodb://127.0.0.1:27017/attendance_db',
         'mongodb://localhost:27017/attendance_db',
     ].filter(uri => uri);
 
