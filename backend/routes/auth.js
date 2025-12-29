@@ -75,18 +75,19 @@ router.post('/signup', async (req, res) => {
 router.post('/login-enrollment', async (req, res) => {
     try {
         const { enrollmentNumber } = req.body;
-        if (!enrollmentNumber) return res.status(400).json({ error: 'Enrollment Number or Phone Number required' });
+        if (!enrollmentNumber) return res.status(400).json({ error: 'Enrollment, Phone, or Email required' });
 
-        // Search by Enrollment Number OR Contact Number
+        // Search by Enrollment Number OR Contact Number OR Email
         const user = await User.findOne({
             $or: [
                 { enrollmentNumber: enrollmentNumber }, // exact match
-                { contactNumber: enrollmentNumber }     // input might be phone number
+                { contactNumber: enrollmentNumber },    // input might be phone number
+                { email: enrollmentNumber }            // input might be email
             ]
         });
 
         if (!user) {
-            return res.status(404).json({ error: 'Student not found with this ID or Phone Number' });
+            return res.status(404).json({ error: 'Student not found with this ID, Phone, or Email' });
         }
 
         const token = jwt.sign({ userId: user._id }, JWT_SECRET, { expiresIn: '24h' });
@@ -110,10 +111,19 @@ router.post('/login', async (req, res) => {
         const { username, password } = req.body;
 
         if (!username || !password) {
-            return res.status(400).json({ error: 'Username and password are required' });
+            return res.status(400).json({ error: 'Username/ID and password are required' });
         }
 
-        const user = await User.findOne({ username });
+        // Search by Username, Enrollment, Contact, or Email
+        const user = await User.findOne({
+            $or: [
+                { username: username },
+                { enrollmentNumber: username },
+                { contactNumber: username },
+                { email: username }
+            ]
+        });
+
         if (!user) {
             return res.status(401).json({ error: 'Invalid credentials' });
         }
