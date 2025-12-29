@@ -1,7 +1,8 @@
 const mongoose = require('mongoose');
 const User = require('./models/User'); // adjust path if needed
 
-const MONGO_URI = 'mongodb://127.0.0.1:27017/attendance_db'; // change to your db
+require('dotenv').config();
+const MONGO_URI = process.env.MONGO_URI || process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/attendance_db';
 
 async function createAdmin() {
   try {
