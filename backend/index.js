@@ -20,11 +20,11 @@ app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 app.use(cookieParser());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-app.use(express.static(path.join(__dirname, '../frontend/public')));
+app.use(express.static(path.join(__dirname, '../frontend/dist')));
 
 // Rate limiting
 const uploadLimit = rateLimit({
-  windowMs: 24 * 60 * 60 * 1000, // 24 hours                                                                                                                                                                  
+  windowMs: 24 * 60 * 60 * 1000, // 24 hours
   max: 1, // limit each user to 1 photo per day
   message: { error: 'You can only upload one photo per day' },
   standardHeaders: true,
@@ -50,9 +50,12 @@ app.use('/api/attendance', attendanceRoutes);
 app.use('/api/holidays', require('./routes/holidayRoutes'));
 app.use('/api/id-card', require('./routes/idCardRoutes'));
 
-// Serve the main page
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, '../frontend/public', 'index.html'));
+// Serve the main page for all non-api routes (SPA support)
+app.get('*', (req, res, next) => {
+  if (req.path.startsWith('/api')) {
+    return next();
+  }
+  res.sendFile(path.join(__dirname, '../frontend/dist', 'index.html'));
 });
 
 // 404 handler

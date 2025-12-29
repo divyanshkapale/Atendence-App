@@ -1,0 +1,15 @@
+{
+    "name": "attendance-app",
+    "version": "1.0.0",
+    "scripts": {
+        "install-client": "cd frontend && npm install",
+        "install-server": "cd backend && npm install",
+        "install-all": "npm run install-client && npm run install-server",
+        "build-client": "cd frontend && npm run build",
+        "start": "cd backend && node index.js",
+        "deploy": "npm run install-all && npm run build-client && npm run start"
+    },
+    "engines": {
+        "node": ">=16.0.0"
+    }
+}
