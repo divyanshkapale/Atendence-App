@@ -234,163 +234,185 @@ const IDCardApply = () => {
     };
 
     return (
-        <div className="container mx-auto p-4 md:p-6 grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8">
-            {/* Left Column: Form/Status */}
-            <div className="bg-white p-4 md:p-6 rounded-xl shadow-md w-full">
-                <div className="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
-                    <h1 className="text-xl md:text-2xl font-bold text-gray-800 text-center md:text-left">Student ID Card Application</h1>
-                    {status === 'approved' && !isEditing && (
+        <div className="hero min-h-screen bg-base-200 items-start pt-4 md:pt-8 pb-12">
+            <div className="hero-content flex-col lg:flex-row items-start w-full max-w-7xl gap-8 p-4">
+
+                {/* Left Column: Form Section */}
+                <div className="card w-full lg:w-3/5 bg-base-100 shadow-xl shrink-0">
+                    <div className="card-body p-4 md:p-8">
+                        <div className="flex flex-col md:flex-row justify-between items-center mb-6 gap-4 border-b pb-4">
+                            <div>
+                                <h1 className="card-title text-2xl md:text-3xl font-bold">ID Card Application</h1>
+                                <p className="text-sm text-base-content/70">Fill in your details to generate your digital ID card.</p>
+                            </div>
+                            {status === 'approved' && !isEditing && (
+                                <button
+                                    onClick={() => setIsEditing(true)}
+                                    className="btn btn-outline btn-sm gap-2"
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
+                                    Edit Details
+                                </button>
+                            )}
+                        </div>
+
+                        {status && (
+                            <div className={`alert shadow-lg mb-6 ${status === 'approved' ? 'alert-success' :
+                                    status === 'rejected' ? 'alert-error' :
+                                        'alert-warning'
+                                }`}>
+                                <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                                <div>
+                                    <h3 className="font-bold uppercase tracking-wider text-sm">Status: {status}</h3>
+                                    {status === 'rejected' && <div className="text-xs mt-1">Reason: {rejectionReason}</div>}
+                                    {status === 'approved' && <div className="text-xs mt-1">Your card is ready! Use the Download button to save it.</div>}
+                                </div>
+                            </div>
+                        )}
+
+                        <form onSubmit={handleSubmit} className="space-y-8">
+                            {/* Personal Details Section */}
+                            <div>
+                                <h3 className="text-lg font-bold text-primary border-b border-base-300 pb-2 mb-4">Personal Details</h3>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div className="form-control">
+                                        <label className="label"><span className="label-text font-semibold">Full Name</span></label>
+                                        <input type="text" name="name" value={formData.name} onChange={handleChange} required className="input input-bordered w-full focus:input-primary" disabled={isReadOnly} />
+                                    </div>
+                                    <div className="form-control">
+                                        <label className="label"><span className="label-text font-semibold">Father's Name</span></label>
+                                        <input type="text" name="fatherName" value={formData.fatherName} onChange={handleChange} required className="input input-bordered w-full focus:input-primary" disabled={isReadOnly} />
+                                    </div>
+                                    <div className="form-control">
+                                        <label className="label"><span className="label-text font-semibold">Mother's Name</span></label>
+                                        <input type="text" name="motherName" value={formData.motherName} onChange={handleChange} required className="input input-bordered w-full focus:input-primary" disabled={isReadOnly} />
+                                    </div>
+                                    <div className="form-control">
+                                        <label className="label"><span className="label-text font-semibold">Date of Birth</span></label>
+                                        <input type="date" name="dob" value={formData.dob} onChange={handleChange} required className="input input-bordered w-full focus:input-primary" disabled={isReadOnly} />
+                                    </div>
+                                    <div className="form-control">
+                                        <label className="label"><span className="label-text font-semibold">Gender</span></label>
+                                        <select name="gender" value={formData.gender} onChange={handleChange} required className="select select-bordered w-full focus:select-primary" disabled={isReadOnly}>
+                                            <option value="">Select Gender</option>
+                                            <option value="Male">Male</option>
+                                            <option value="Female">Female</option>
+                                            <option value="Other">Other</option>
+                                        </select>
+                                    </div>
+                                    <div className="form-control">
+                                        <label className="label"><span className="label-text font-semibold">Category</span></label>
+                                        <select name="category" value={formData.category} onChange={handleChange} required className="select select-bordered w-full focus:select-primary" disabled={isReadOnly}>
+                                            <option value="">Select Category</option>
+                                            <option value="General">General</option>
+                                            <option value="OBC">OBC</option>
+                                            <option value="SC">SC</option>
+                                            <option value="ST">ST</option>
+                                        </select>
+                                    </div>
+                                    <div className="form-control">
+                                        <label className="label"><span className="label-text font-semibold">Blood Group</span></label>
+                                        <input type="text" name="bloodGroup" value={formData.bloodGroup} onChange={handleChange} className="input input-bordered w-full focus:input-primary" placeholder="e.g. O+" disabled={isReadOnly} />
+                                    </div>
+                                    <div className="form-control">
+                                        <label className="label"><span className="label-text font-semibold">Mobile Number</span></label>
+                                        <input type="tel" name="mobileNumber" value={formData.mobileNumber} onChange={handleChange} required className="input input-bordered w-full focus:input-primary" disabled={isReadOnly} />
+                                    </div>
+                                    <div className="form-control md:col-span-2">
+                                        <label className="label"><span className="label-text font-semibold">Full Address</span></label>
+                                        <textarea name="address" value={formData.address} onChange={handleChange} required className="textarea textarea-bordered h-24 focus:textarea-primary" disabled={isReadOnly}></textarea>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Academic Details Section */}
+                            <div>
+                                <h3 className="text-lg font-bold text-primary border-b border-base-300 pb-2 mb-4">Academic Details</h3>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div className="form-control">
+                                        <label className="label"><span className="label-text font-semibold">Course / Class</span></label>
+                                        <input type="text" name="course" value={formData.course} onChange={handleChange} required className="input input-bordered w-full focus:input-primary" placeholder="e.g. B.Sc CS" disabled={isReadOnly} />
+                                    </div>
+                                    <div className="form-control">
+                                        <label className="label"><span className="label-text font-semibold">Session</span></label>
+                                        <input type="text" name="session" value={formData.session} onChange={handleChange} required className="input input-bordered w-full focus:input-primary" placeholder="e.g. 2024-25" disabled={isReadOnly} />
+                                    </div>
+                                    <div className="form-control">
+                                        <label className="label"><span className="label-text font-semibold">Admission Number</span></label>
+                                        <input type="text" name="admissionNumber" value={formData.admissionNumber} onChange={handleChange} className="input input-bordered w-full focus:input-primary" placeholder="Auto-generated if empty" disabled={isReadOnly} />
+                                    </div>
+                                    <div className="form-control">
+                                        <label className="label"><span className="label-text font-semibold">Enrollment Number</span></label>
+                                        <input type="text" name="enrollmentNumber" value={formData.enrollmentNumber} onChange={handleChange} required className="input input-bordered w-full focus:input-primary" disabled={isReadOnly} />
+                                    </div>
+                                    <div className="form-control">
+                                        <label className="label"><span className="label-text font-semibold">Admission Date</span></label>
+                                        <input type="date" name="admissionDate" value={formData.admissionDate} onChange={handleChange} required className="input input-bordered w-full focus:input-primary" disabled={isReadOnly} />
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Uploads Section */}
+                            <div>
+                                <h3 className="text-lg font-bold text-primary border-b border-base-300 pb-2 mb-4">Documents Upload</h3>
+                                <div className="grid grid-cols-1 gap-6">
+                                    <div className="form-control">
+                                        <label className="label"><span className="label-text font-semibold">Student Photo</span></label>
+                                        <input type="file" name="photo" onChange={handleFileChange} accept="image/*" required={!files.photoPreview} className="file-input file-input-bordered file-input-primary w-full" disabled={isReadOnly} />
+                                        <label className="label"><span className="label-text-alt">Supported: JPG, PNG (Max 2MB)</span></label>
+                                    </div>
+                                    <div className="form-control">
+                                        <label className="label"><span className="label-text font-semibold">Student Signature</span></label>
+                                        <input type="file" name="signature" onChange={handleFileChange} accept="image/*" className="file-input file-input-bordered file-input-primary w-full" disabled={isReadOnly} />
+                                        <label className="label"><span className="label-text-alt">Supported: JPG, PNG (Max 2MB)</span></label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {!isReadOnly && (
+                                <div className="flex flex-col md:flex-row gap-4 pt-4 border-t border-base-300">
+                                    {isEditing && (
+                                        <button type="button" onClick={() => setIsEditing(false)} className="btn btn-ghost flex-1">
+                                            Cancel
+                                        </button>
+                                    )}
+                                    <button type="submit" className="btn btn-primary flex-1 text-lg shadow-lg">
+                                        {status === 'approved' ? 'Update & Resubmit' : (status === 'rejected' ? 'Resubmit Application' : 'Submit Application')}
+                                    </button>
+                                </div>
+                            )}
+                        </form>
+                    </div>
+                </div>
+
+                {/* Right Column: Preview */}
+                <div className="w-full lg:w-2/5 flex flex-col items-center sticky top-8 h-fit">
+                    <div className="alert alert-info shadow-sm mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="stroke-current shrink-0 w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        <span>Live Preview – This is how your card will look.</span>
+                    </div>
+
+                    {institutionData ? (
+                        <div className="shadow-2xl rounded-lg overflow-hidden ring-4 ring-base-300 transform hover:scale-[1.02] transition-transform duration-300">
+                            <IDCardPreview studentData={previewData} institutionData={institutionData} status={status} approvalDate={approvalDate} />
+                        </div>
+                    ) : (
+                        <div className="flex flex-col items-center justify-center p-12 bg-base-100 rounded-xl shadow w-full h-64">
+                            <span className="loading loading-spinner loading-lg text-primary"></span>
+                            <span className="mt-4 text-base-content/60">Loading Template...</span>
+                        </div>
+                    )}
+
+                    {status === 'approved' && (
                         <button
-                            onClick={() => setIsEditing(true)}
-                            className="bg-indigo-100 text-indigo-700 px-4 py-2 rounded-lg text-sm font-bold hover:bg-indigo-200 transition w-full md:w-auto"
+                            onClick={downloadImage}
+                            className="btn btn-success btn-lg w-full mt-8 shadow-xl text-white gap-3"
                         >
-                            ✏️ Edit Details
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
+                            Download ID Card
                         </button>
                     )}
                 </div>
-
-                {status && (
-                    <div className={`mb-6 p-4 rounded-lg flex flex-col gap-2 border-l-4 ${status === 'approved' ? 'bg-green-50 border-green-500 text-green-800' :
-                        status === 'rejected' ? 'bg-red-50 border-red-500 text-red-800' :
-                            'bg-yellow-50 border-yellow-500 text-yellow-800'
-                        }`}>
-                        <div className="font-bold uppercase tracking-wider text-sm">Status: {status}</div>
-                        {status === 'rejected' && <div className="text-sm mt-1">Reason: {rejectionReason}</div>}
-                        {status === 'approved' && <div className="text-sm mt-1">Your card is ready! Use the Download button to save it.</div>}
-                    </div>
-                )}
-
-                <form onSubmit={handleSubmit} className="space-y-6">
-                    {/* Personal Details Section */}
-                    <fieldset className="border-2 border-indigo-100 p-4 rounded-xl" disabled={isReadOnly}>
-                        <legend className="font-bold px-2 text-indigo-600 text-lg">Personal Details</legend>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <label className="label block font-semibold mb-1 text-gray-700">Name</label>
-                                <input type="text" name="name" value={formData.name} onChange={handleChange} required className="input w-full p-3 border-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:ring-0 text-base min-h-[48px]" />
-                            </div>
-                            <div>
-                                <label className="label block font-semibold mb-1 text-gray-700">Father Name</label>
-                                <input type="text" name="fatherName" value={formData.fatherName} onChange={handleChange} required className="input w-full p-3 border-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:ring-0 text-base min-h-[48px]" />
-                            </div>
-                            <div>
-                                <label className="label block font-semibold mb-1 text-gray-700">Mother Name</label>
-                                <input type="text" name="motherName" value={formData.motherName} onChange={handleChange} required className="input w-full p-3 border-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:ring-0 text-base min-h-[48px]" />
-                            </div>
-                            <div>
-                                <label className="label block font-semibold mb-1 text-gray-700">Date of Birth</label>
-                                <input type="date" name="dob" value={formData.dob} onChange={handleChange} required className="input w-full p-3 border-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:ring-0 text-base min-h-[48px] bg-white" />
-                            </div>
-                            <div>
-                                <label className="label block font-semibold mb-1 text-gray-700">Gender</label>
-                                <select name="gender" value={formData.gender} onChange={handleChange} required className="select w-full p-3 border-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:ring-0 text-base min-h-[48px] bg-white">
-                                    <option value="">Select Gender</option>
-                                    <option value="Male">Male</option>
-                                    <option value="Female">Female</option>
-                                    <option value="Other">Other</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label className="label block font-semibold mb-1 text-gray-700">Category</label>
-                                <select name="category" value={formData.category} onChange={handleChange} required className="select w-full p-3 border-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:ring-0 text-base min-h-[48px] bg-white">
-                                    <option value="">Select Category</option>
-                                    <option value="General">General</option>
-                                    <option value="OBC">OBC</option>
-                                    <option value="SC">SC</option>
-                                    <option value="ST">ST</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label className="label block font-semibold mb-1 text-gray-700">Blood Group</label>
-                                <input type="text" name="bloodGroup" value={formData.bloodGroup} onChange={handleChange} className="input w-full p-3 border-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:ring-0 text-base min-h-[48px]" placeholder="e.g. O+" />
-                            </div>
-                            <div>
-                                <label className="label block font-semibold mb-1 text-gray-700">Mobile Number</label>
-                                <input type="tel" name="mobileNumber" value={formData.mobileNumber} onChange={handleChange} required className="input w-full p-3 border-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:ring-0 text-base min-h-[48px]" />
-                            </div>
-                            <div className="col-span-1 md:col-span-2">
-                                <label className="label block font-semibold mb-1 text-gray-700">Full Address</label>
-                                <textarea name="address" value={formData.address} onChange={handleChange} required className="textarea w-full p-3 border-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:ring-0 text-base min-h-[80px]" rows="3"></textarea>
-                            </div>
-                        </div>
-                    </fieldset>
-
-                    {/* Academic Details Section */}
-                    <fieldset className="border-2 border-indigo-100 p-4 rounded-xl" disabled={isReadOnly}>
-                        <legend className="font-bold px-2 text-indigo-600 text-lg">Academic Details</legend>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <label className="label block font-semibold mb-1 text-gray-700">Course/Class</label>
-                                <input type="text" name="course" value={formData.course} onChange={handleChange} required className="input w-full p-3 border-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:ring-0 text-base min-h-[48px]" placeholder="e.g. B.Sc CS" />
-                            </div>
-                            <div>
-                                <label className="label block font-semibold mb-1 text-gray-700">Session</label>
-                                <input type="text" name="session" value={formData.session} onChange={handleChange} required className="input w-full p-3 border-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:ring-0 text-base min-h-[48px]" placeholder="e.g. 2024-25" />
-                            </div>
-                            <div>
-                                <label className="label block font-semibold mb-1 text-gray-700">Admission Number</label>
-                                <input type="text" name="admissionNumber" value={formData.admissionNumber} onChange={handleChange} className="input w-full p-3 border-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:ring-0 text-base min-h-[48px]" placeholder="Auto-generated if empty" />
-                            </div>
-                            <div>
-                                <label className="label block font-semibold mb-1 text-gray-700">Enrollment No.</label>
-                                <input type="text" name="enrollmentNumber" value={formData.enrollmentNumber} onChange={handleChange} required className="input w-full p-3 border-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:ring-0 text-base min-h-[48px]" />
-                            </div>
-                            <div>
-                                <label className="label block font-semibold mb-1 text-gray-700">Admission Date</label>
-                                <input type="date" name="admissionDate" value={formData.admissionDate} onChange={handleChange} required className="input w-full p-3 border-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:ring-0 text-base min-h-[48px] bg-white" />
-                            </div>
-                        </div>
-                    </fieldset>
-
-                    {/* Uploads Section */}
-                    <fieldset className="border-2 border-indigo-100 p-4 rounded-xl" disabled={isReadOnly}>
-                        <legend className="font-bold px-2 text-indigo-600 text-lg">Uploads</legend>
-                        <div className="grid grid-cols-1 gap-6">
-                            <div className="form-control">
-                                <label className="label block font-semibold mb-2 text-gray-700">Student Photo</label>
-                                <input type="file" name="photo" onChange={handleFileChange} accept="image/*" required={!files.photoPreview} className="file-input file-input-bordered file-input-primary w-full max-w-full" />
-                                <span className="text-xs text-gray-500 mt-1 block">Supported: JPG, PNG (Max 2MB)</span>
-                            </div>
-                            <div className="form-control">
-                                <label className="label block font-semibold mb-2 text-gray-700">Student Signature</label>
-                                <input type="file" name="signature" onChange={handleFileChange} accept="image/*" className="file-input file-input-bordered file-input-primary w-full max-w-full" />
-                                <span className="text-xs text-gray-500 mt-1 block">Supported: JPG, PNG (Max 2MB)</span>
-                            </div>
-                        </div>
-                    </fieldset>
-
-                    {!isReadOnly && (
-                        <div className="flex flex-col md:flex-row gap-3 mt-6">
-                            {isEditing && (
-                                <button type="button" onClick={() => setIsEditing(false)} className="flex-1 bg-gray-500 text-white py-4 rounded-xl font-bold hover:bg-gray-600 transition shadow-lg text-lg">
-                                    Cancel
-                                </button>
-                            )}
-                            <button type="submit" className="flex-1 bg-indigo-600 text-white py-4 rounded-xl font-bold hover:bg-indigo-700 transition shadow-indigo-200 shadow-lg text-lg">
-                                {status === 'approved' ? 'Update Details' : (status === 'rejected' ? 'Resubmit Application' : 'Submit Application')}
-                            </button>
-                        </div>
-                    )}
-                </form>
-            </div>
-
-            {/* Right Column: Preview */}
-            <div className="flex flex-col items-center sticky top-8 h-fit">
-                <h2 className="text-xl font-bold mb-4 text-gray-700">Live Preview</h2>
-                {institutionData ? (
-                    <IDCardPreview studentData={previewData} institutionData={institutionData} status={status} approvalDate={approvalDate} />
-                ) : (
-                    <div className="text-gray-500">Loading Institution Config...</div>
-                )}
-
-                {status === 'approved' && (
-                    <button
-                        onClick={downloadImage}
-                        className="mt-6 bg-green-600 text-white px-8 py-3 rounded-full shadow-lg font-bold hover:bg-green-700 transition flex items-center gap-2"
-                    >
-                        <span>⬇️ Download ID Card (PNG)</span>
-                    </button>
-                )}
             </div>
 
             {/* Print Styles */}
@@ -425,7 +447,7 @@ const IDCardApply = () => {
                     }
                 }
             `}</style>
-        </div >
+        </div>
     );
 };
 

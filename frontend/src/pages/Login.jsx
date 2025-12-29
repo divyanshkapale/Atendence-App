@@ -68,224 +68,170 @@ const Login = () => {
     };
 
     return (
-        <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-4 overflow-y-auto">
-            {/* App Header */}
-            <div className="flex flex-row items-center justify-center gap-4 mb-6 md:mb-8 text-base-content w-full max-w-2xl">
-                <div className="avatar">
-                    <div className="w-16 md:w-24 rounded-xl bg-base-content/5 p-2 backdrop-blur-sm">
-                        <img
-                            src="/logo.png"
-                            alt="College Logo"
-                            onError={(e) => e.target.src = '/logo.svg'}
-                        />
+
+        <div className="hero min-h-screen bg-base-200">
+            <div className="hero-content flex-col gap-8 w-full max-w-md">
+
+                {/* Header Section */}
+                <div className="text-center">
+                    <div className="avatar mb-4">
+                        <div className="w-24 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2 p-2 bg-white">
+                            <img
+                                src="/logo.png"
+                                alt="College Logo"
+                                onError={(e) => e.target.src = '/logo.svg'}
+                                className="object-contain"
+                            />
+                        </div>
                     </div>
+                    <h1 className="text-3xl font-bold text-base-content">Govt Pench Valley PG College</h1>
+                    <p className="py-2 text-base-content/70">Department of Botany • E-Attendance System</p>
                 </div>
-                <div className="text-left">
-                    <h1 className="text-lg md:text-2xl font-bold text-primary leading-tight">
-                        Government Pench Valley PG College, Parasia
-                    </h1>
-                    <h2 className="text-sm md:text-lg font-semibold opacity-80">
-                        Department of Botany
-                    </h2>
-                    <div className="badge badge-sm md:badge-md badge-primary gap-1 mt-1">
-                        📸 E-Attendance System
-                    </div>
-                </div>
-            </div>
 
-            <div className="card w-full max-w-sm bg-base-100 shadow-xl">
-                <div className="card-body">
-                    <div className="text-center mb-4">
-                        <div className="avatar placeholder mb-2">
-                            <div className={`text-primary-content rounded-full w-12 flex items-center justify-center ${isAdminLogin ? 'bg-secondary' : 'bg-primary'}`}>
-                                <LogIn size={24} />
-                            </div>
-                        </div>
-                        <h2 className="card-title justify-center text-2xl font-bold text-base-content">
-                            {isRegistering ? 'Create Account' : isAdminLogin ? 'Admin Login' : 'Student Login'}
-                        </h2>
-                        <p className="text-base-content/60 text-sm">
-                            {isRegistering ? 'Register to get started' : isAdminLogin ? 'Enter admin credentials' : 'Sign in with Enrollment or Mobile'}
-                        </p>
-                    </div>
+                {/* Login Card */}
+                <div className="card w-full shadow-2xl bg-base-100">
+                    <div className="card-body">
 
-                    {error && (
-                        <div className="alert alert-error text-sm py-2 mb-4">
-                            <span>{error}</span>
-                        </div>
-                    )}
-                    {successMsg && (
-                        <div className="alert alert-success text-sm py-2 mb-4">
-                            <span>{successMsg}</span>
-                        </div>
-                    )}
+                        {/* Title & Toggle */}
+                        <div className="flex flex-col items-center mb-6">
+                            <h2 className="card-title text-2xl mb-2">
+                                {isRegistering ? 'Create Account' : isAdminLogin ? 'Admin Portal' : 'Student Login'}
+                            </h2>
 
-                    {!isRegistering && (
-                        <div className="tabs tabs-boxed justify-center mb-4 bg-base-200">
-                            <a
-                                className={`tab ${!isAdminLogin ? 'tab-active' : ''}`}
-                                onClick={() => { setIsAdminLogin(false); setError(''); }}
-                            >Student</a>
-                            <a
-                                className={`tab ${isAdminLogin ? 'tab-active' : ''}`}
-                                onClick={() => { setIsAdminLogin(true); setError(''); }}
-                            >Admin</a>
-                        </div>
-                    )}
-
-                    <form onSubmit={handleSubmit} className="space-y-4">
-                        {!isRegistering && (
-                            <div className="form-control">
-                                <label className="label py-1">
-                                    <span className="label-text font-semibold">
-                                        {isAdminLogin ? 'Username' : 'Enrollment or Mobile Number'}
-                                    </span>
-                                </label>
-                                <div className="relative">
-                                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-base-content/50">
-                                        <User size={18} />
-                                    </div>
-                                    <input
-                                        type="text"
-                                        name="username"
-                                        className="input input-bordered w-full pl-10"
-                                        value={formData.username}
-                                        onChange={handleChange}
-                                        placeholder={isAdminLogin ? "Enter Admin Username" : "Enter Enrollment or Mobile No."}
-                                        required
-                                    />
+                            {!isRegistering && (
+                                <div className="tabs tabs-boxed bg-base-200 mt-2">
+                                    <a
+                                        className={`tab ${!isAdminLogin ? 'tab-active bg-primary text-primary-content' : ''}`}
+                                        onClick={() => { setIsAdminLogin(false); setError(''); }}
+                                    >Student</a>
+                                    <a
+                                        className={`tab ${isAdminLogin ? 'tab-active bg-primary text-primary-content' : ''}`}
+                                        onClick={() => { setIsAdminLogin(true); setError(''); }}
+                                    >Admin</a>
                                 </div>
+                            )}
+                        </div>
+
+                        {error && (
+                            <div className="alert alert-error shadow-lg text-sm mb-4">
+                                <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                                <span>{error}</span>
+                            </div>
+                        )}
+                        {successMsg && (
+                            <div className="alert alert-success shadow-lg text-sm mb-4">
+                                <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                                <span>{successMsg}</span>
                             </div>
                         )}
 
-                        {isRegistering && (
-                            <>
+                        <form onSubmit={handleSubmit} className="space-y-4">
+                            {!isRegistering && (
                                 <div className="form-control">
-                                    <label className="label py-1">
-                                        <span className="label-text font-semibold">Username</span>
+                                    <label className="label">
+                                        <span className="label-text font-semibold">
+                                            {isAdminLogin ? 'Admin Username' : 'Enrollment / Mobile'}
+                                        </span>
                                     </label>
                                     <div className="relative">
-                                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-base-content/50">
+                                        <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-base-content/50">
                                             <User size={18} />
-                                        </div>
+                                        </span>
                                         <input
                                             type="text"
                                             name="username"
-                                            className="input input-bordered w-full pl-10"
+                                            className="input input-bordered w-full pl-10 focus:input-primary"
                                             value={formData.username}
                                             onChange={handleChange}
-                                            placeholder="Choose a username"
+                                            placeholder={isAdminLogin ? "admin_user" : "Enter ID or Mobile"}
                                             required
                                         />
                                     </div>
                                 </div>
-                                <div className="form-control">
-                                    <label className="label py-1">
-                                        <span className="label-text font-semibold">Enrollment Number</span>
-                                    </label>
-                                    <input
-                                        type="text"
-                                        name="enrollmentNumber"
-                                        className="input input-bordered w-full"
-                                        value={formData.enrollmentNumber}
-                                        onChange={handleChange}
-                                        placeholder="Enter enrollment no."
-                                        required
-                                    />
-                                </div>
-                                <div className="form-control">
-                                    <label className="label py-1">
-                                        <span className="label-text font-semibold">Mobile Number</span>
-                                    </label>
-                                    <input
-                                        type="tel"
-                                        name="contactNumber"
-                                        className="input input-bordered w-full"
-                                        value={formData.contactNumber}
-                                        onChange={handleChange}
-                                        placeholder="Enter mobile no."
-                                        required
-                                    />
-                                </div>
-                            </>
-                        )}
+                            )}
 
-                        <div className="form-control">
-                            <label className="label py-1">
-                                <span className="label-text font-semibold">Password</span>
-                            </label>
-                            <div className="relative">
-                                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-base-content/50">
-                                    <Lock size={18} />
+                            {isRegistering && (
+                                <>
+                                    <div className="form-control">
+                                        <label className="label"><span className="label-text">Username</span></label>
+                                        <input type="text" name="username" className="input input-bordered w-full" value={formData.username} onChange={handleChange} required />
+                                    </div>
+                                    <div className="form-control">
+                                        <label className="label"><span className="label-text">Enrollment No.</span></label>
+                                        <input type="text" name="enrollmentNumber" className="input input-bordered w-full" value={formData.enrollmentNumber} onChange={handleChange} required />
+                                    </div>
+                                    <div className="form-control">
+                                        <label className="label"><span className="label-text">Mobile No.</span></label>
+                                        <input type="tel" name="contactNumber" className="input input-bordered w-full" value={formData.contactNumber} onChange={handleChange} required />
+                                    </div>
+                                </>
+                            )}
+
+                            <div className="form-control">
+                                <label className="label">
+                                    <span className="label-text font-semibold">Password</span>
+                                </label>
+                                <div className="relative">
+                                    <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-base-content/50">
+                                        <Lock size={18} />
+                                    </span>
+                                    <input
+                                        type={showPassword ? "text" : "password"}
+                                        name="password"
+                                        className="input input-bordered w-full pl-10 pr-10 focus:input-primary"
+                                        value={formData.password}
+                                        onChange={handleChange}
+                                        placeholder="••••••••"
+                                        required
+                                        minLength={6}
+                                    />
+                                    <button
+                                        type="button"
+                                        className="absolute inset-y-0 right-0 pr-3 flex items-center text-base-content/50 hover:text-primary transition-colors"
+                                        onClick={() => setShowPassword(!showPassword)}
+                                    >
+                                        {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                                    </button>
                                 </div>
-                                <input
-                                    type={showPassword ? "text" : "password"}
-                                    name="password"
-                                    className="input input-bordered w-full pl-10 pr-10"
-                                    value={formData.password}
-                                    onChange={handleChange}
-                                    placeholder="Enter password"
-                                    required
-                                    minLength={6}
-                                />
-                                <button
-                                    type="button"
-                                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-base-content/50 hover:text-primary transition-colors"
-                                    onClick={() => setShowPassword(!showPassword)}
-                                >
-                                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                            </div>
+
+                            {isRegistering && (
+                                <div className="form-control">
+                                    <label className="label"><span className="label-text">Confirm Password</span></label>
+                                    <input type="password" name="confirmPassword" className="input input-bordered w-full" value={formData.confirmPassword} onChange={handleChange} required />
+                                </div>
+                            )}
+
+                            <div className="form-control mt-6">
+                                <button type="submit" className="btn btn-primary w-full text-lg shadow-md">
+                                    {isRegistering ? 'Register Account' : isAdminLogin ? 'Access Dashboard' : 'Sign In'}
                                 </button>
                             </div>
+                        </form>
+
+                        <div className="divider">OR</div>
+
+                        <div className="flex justify-center">
+                            <button
+                                onClick={() => {
+                                    setIsRegistering(!isRegistering);
+                                    setIsAdminLogin(false);
+                                    setError('');
+                                    setSuccessMsg('');
+                                }}
+                                className="btn btn-ghost btn-sm normal-case font-normal text-base-content/70 hover:text-primary"
+                            >
+                                {isRegistering
+                                    ? 'Already have an account? Login'
+                                    : 'New Student? Create Account'}
+                            </button>
                         </div>
-
-                        {isRegistering && (
-                            <div className="form-control">
-                                <label className="label py-1">
-                                    <span className="label-text font-semibold">Confirm Password</span>
-                                </label>
-                                <input
-                                    type="password"
-                                    name="confirmPassword"
-                                    className="input input-bordered w-full"
-                                    value={formData.confirmPassword}
-                                    onChange={handleChange}
-                                    placeholder="Confirm password"
-                                    required
-                                />
-                            </div>
-                        )}
-
-                        <button
-                            type="submit"
-                            className="btn btn-primary w-full mt-4"
-                        >
-                            <span>{isRegistering ? 'Register' : isAdminLogin ? 'Admin Login' : 'Login'}</span>
-                            <LogIn size={18} />
-                        </button>
-                    </form>
-
-                    <div className="divider my-2">OR</div>
-
-                    <div className="text-center flex flex-col gap-1">
-                        <button
-                            onClick={() => {
-                                setIsRegistering(!isRegistering);
-                                setIsAdminLogin(false); // Reset admin state when switching reg
-                                setError('');
-                                setSuccessMsg('');
-                            }}
-                            className="btn btn-link no-underline text-sm"
-                        >
-                            {isRegistering
-                                ? 'Already have an account? Login'
-                                : 'New here? Create an Account'}
-                        </button>
                     </div>
                 </div>
-            </div>
 
-            <div className="mt-8 text-base-content/60 text-xs">
-                &copy; {new Date().getFullYear()} Government Pench Valley PG College
+                <div className="text-center text-xs opacity-50">
+                    &copy; {new Date().getFullYear()} Government Pench Valley PG College
+                </div>
             </div>
         </div>
     );
