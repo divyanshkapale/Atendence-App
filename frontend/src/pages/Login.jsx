@@ -5,7 +5,7 @@ import { User, Lock, Eye, EyeOff, LogIn } from 'lucide-react';
 
 const Login = () => {
     const [isRegistering, setIsRegistering] = useState(false);
-    const [isQuickLogin, setIsQuickLogin] = useState(false);
+
     const [formData, setFormData] = useState({
         username: '',
         password: '',
@@ -28,30 +28,7 @@ const Login = () => {
         setError('');
         setSuccessMsg('');
 
-        if (isQuickLogin) {
-            try {
-                const res = await fetch('/api/auth/login-enrollment', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ enrollmentNumber: formData.enrollmentNumber })
-                });
-                const data = await res.json();
-                if (res.ok) {
-                    // Manually set user state or reload to let App fetch user
-                    // Since context login takes username/pass, we might need to manually set token?
-                    // The API set the cookie.
-                    // We can just refresh or call a 'checkAuth' method if exposed.
-                    // Or just window.location.reload() to trigger AuthProvider check.
-                    // Or reuse login logic if updated? 
-                    // Let's just reload to be safe and simple:
-                    window.location.reload();
-                } else {
-                    setError(data.error || 'Login failed');
-                }
-            } catch (err) {
-                setError('Login failed. Please check enrollment number.');
-            }
-        } else if (isRegistering) {
+        if (isRegistering) {
             if (formData.password !== formData.confirmPassword) {
                 return setError('Passwords do not match');
             }
@@ -78,6 +55,7 @@ const Login = () => {
                 setError('Registration failed. Please try again.');
             }
         } else {
+            // Standard Login (Username/Enrollment/Mobile + Password)
             try {
                 await login(formData.username, formData.password);
                 navigate('/');
@@ -122,10 +100,10 @@ const Login = () => {
                             </div>
                         </div>
                         <h2 className="card-title justify-center text-2xl font-bold text-base-content">
-                            {isRegistering ? 'Create Account' : isQuickLogin ? 'Quick Access' : 'Welcome Back'}
+                            {isRegistering ? 'Create Account' : 'Welcome Back'}
                         </h2>
                         <p className="text-base-content/60 text-sm">
-                            {isRegistering ? 'Register to get started' : isQuickLogin ? 'Use Enrollment No., Mobile, or Email' : 'Sign in to continue'}
+                            {isRegistering ? 'Register to get started' : 'Sign in with your credentials'}
                         </p>
                     </div>
 
@@ -141,10 +119,10 @@ const Login = () => {
                     )}
 
                     <form onSubmit={handleSubmit} className="space-y-4">
-                        {!isQuickLogin && (
+                        {!isRegistering && (
                             <div className="form-control">
                                 <label className="label py-1">
-                                    <span className="label-text font-semibold">Username</span>
+                                    <span className="label-text font-semibold">Enrollment or Mobile Number</span>
                                 </label>
                                 <div className="relative">
                                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-base-content/50">
@@ -156,76 +134,92 @@ const Login = () => {
                                         className="input input-bordered w-full pl-10"
                                         value={formData.username}
                                         onChange={handleChange}
-                                        placeholder="Enter username"
-                                        required={!isQuickLogin}
+                                        placeholder="Enter Enrollment or Mobile No."
+                                        required
                                     />
                                 </div>
-                            </div>
-                        )}
-
-                        {(isRegistering || isQuickLogin) && (
-                            <div className="form-control">
-                                <label className="label py-1">
-                                    <span className="label-text font-semibold">Enrollment, Mobile, or Email</span>
-                                </label>
-                                <input
-                                    type="text"
-                                    name="enrollmentNumber"
-                                    className="input input-bordered w-full"
-                                    value={formData.enrollmentNumber}
-                                    onChange={handleChange}
-                                    placeholder="Enter ID, Mobile, or Email"
-                                    required
-                                />
                             </div>
                         )}
 
                         {isRegistering && (
-                            <div className="form-control">
-                                <label className="label py-1">
-                                    <span className="label-text font-semibold">Mobile Number</span>
-                                </label>
-                                <input
-                                    type="tel"
-                                    name="contactNumber"
-                                    className="input input-bordered w-full"
-                                    value={formData.contactNumber}
-                                    onChange={handleChange}
-                                    placeholder="Enter mobile no."
-                                    required
-                                />
-                            </div>
+                            <>
+                                <div className="form-control">
+                                    <label className="label py-1">
+                                        <span className="label-text font-semibold">Username</span>
+                                    </label>
+                                    <div className="relative">
+                                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-base-content/50">
+                                            <User size={18} />
+                                        </div>
+                                        <input
+                                            type="text"
+                                            name="username"
+                                            className="input input-bordered w-full pl-10"
+                                            value={formData.username}
+                                            onChange={handleChange}
+                                            placeholder="Choose a username"
+                                            required
+                                        />
+                                    </div>
+                                </div>
+                                <div className="form-control">
+                                    <label className="label py-1">
+                                        <span className="label-text font-semibold">Enrollment Number</span>
+                                    </label>
+                                    <input
+                                        type="text"
+                                        name="enrollmentNumber"
+                                        className="input input-bordered w-full"
+                                        value={formData.enrollmentNumber}
+                                        onChange={handleChange}
+                                        placeholder="Enter enrollment no."
+                                        required
+                                    />
+                                </div>
+                                <div className="form-control">
+                                    <label className="label py-1">
+                                        <span className="label-text font-semibold">Mobile Number</span>
+                                    </label>
+                                    <input
+                                        type="tel"
+                                        name="contactNumber"
+                                        className="input input-bordered w-full"
+                                        value={formData.contactNumber}
+                                        onChange={handleChange}
+                                        placeholder="Enter mobile no."
+                                        required
+                                    />
+                                </div>
+                            </>
                         )}
 
-                        {!isQuickLogin && (
-                            <div className="form-control">
-                                <label className="label py-1">
-                                    <span className="label-text font-semibold">Password</span>
-                                </label>
-                                <div className="relative">
-                                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-base-content/50">
-                                        <Lock size={18} />
-                                    </div>
-                                    <input
-                                        type={showPassword ? "text" : "password"}
-                                        name="password"
-                                        className="input input-bordered w-full pl-10 pr-10"
-                                        value={formData.password}
-                                        onChange={handleChange}
-                                        placeholder="Enter password"
-                                        required={!isQuickLogin}
-                                        minLength={6}
-                                    />
-                                    <button
-                                        type="button"
-                                        className="absolute inset-y-0 right-0 pr-3 flex items-center text-base-content/50 hover:text-primary transition-colors"
-                                        onClick={() => setShowPassword(!showPassword)}
-                                    >
-                                        {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                                    </button>
+                        <div className="form-control">
+                            <label className="label py-1">
+                                <span className="label-text font-semibold">Password</span>
+                            </label>
+                            <div className="relative">
+                                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-base-content/50">
+                                    <Lock size={18} />
                                 </div>
+                                <input
+                                    type={showPassword ? "text" : "password"}
+                                    name="password"
+                                    className="input input-bordered w-full pl-10 pr-10"
+                                    value={formData.password}
+                                    onChange={handleChange}
+                                    placeholder="Enter password"
+                                    required
+                                    minLength={6}
+                                />
+                                <button
+                                    type="button"
+                                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-base-content/50 hover:text-primary transition-colors"
+                                    onClick={() => setShowPassword(!showPassword)}
+                                >
+                                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                                </button>
                             </div>
-                        )}
+                        </div>
 
                         {isRegistering && (
                             <div className="form-control">
@@ -248,7 +242,7 @@ const Login = () => {
                             type="submit"
                             className="btn btn-primary w-full mt-4"
                         >
-                            <span>{isRegistering ? 'Register' : isQuickLogin ? 'Access Dashboard' : 'Sign In'}</span>
+                            <span>{isRegistering ? 'Register' : 'Sign In'}</span>
                             <LogIn size={18} />
                         </button>
                     </form>
@@ -256,32 +250,17 @@ const Login = () => {
                     <div className="divider my-2">OR</div>
 
                     <div className="text-center flex flex-col gap-1">
-                        {!isQuickLogin && (
-                            <button
-                                onClick={() => {
-                                    setIsRegistering(!isRegistering);
-                                    setIsQuickLogin(false);
-                                    setError('');
-                                    setSuccessMsg('');
-                                }}
-                                className="btn btn-link no-underline text-sm"
-                            >
-                                {isRegistering
-                                    ? 'Already have an account? Login'
-                                    : 'New here? Create an Account'}
-                            </button>
-                        )}
-
                         <button
                             onClick={() => {
-                                setIsQuickLogin(!isQuickLogin);
-                                setIsRegistering(false);
+                                setIsRegistering(!isRegistering);
                                 setError('');
                                 setSuccessMsg('');
                             }}
-                            className="btn btn-link no-underline text-xs text-base-content/70"
+                            className="btn btn-link no-underline text-sm"
                         >
-                            {isQuickLogin ? 'Back to Standard Login' : 'Quick Access via Enrollment No.'}
+                            {isRegistering
+                                ? 'Already have an account? Login'
+                                : 'New here? Create an Account'}
                         </button>
                     </div>
                 </div>
