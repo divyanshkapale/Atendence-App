@@ -58,6 +58,44 @@ const applyForIDCard = async (req, res) => {
             return res.status(400).json({ error: 'Personal and Academic details are required' });
         }
 
+        const enrollmentNumber = academicDetails.enrollmentNumber;
+        const mobileNumber = personalDetails.mobileNumber;
+        const newName = personalDetails.name;
+
+        // 1. Check for duplicates in other users or current user update
+        if (enrollmentNumber || mobileNumber) {
+            const existingUser = await User.findOne({
+                _id: { $ne: userId },
+                $or: [
+                    { enrollmentNumber: enrollmentNumber },
+                    { contactNumber: mobileNumber }
+                ]
+            });
+
+            if (existingUser) {
+                if (existingUser.enrollmentNumber === enrollmentNumber) {
+                    return res.status(400).json({ error: 'Enrollment Number already registered to another student' });
+                }
+                if (existingUser.contactNumber === mobileNumber) {
+                    return res.status(400).json({ error: 'Mobile Number already registered to another student' });
+                }
+            }
+        }
+
+        // 2. Update User Profile (Sync)
+        try {
+            await User.findByIdAndUpdate(userId, {
+                username: newName,
+                enrollmentNumber: enrollmentNumber,
+                contactNumber: mobileNumber
+            });
+        } catch (err) {
+            if (err.code === 11000) {
+                return res.status(400).json({ error: 'Username "' + newName + '" is already taken. Please add an initial or full name.' });
+            }
+            throw err;
+        }
+
         const uploads = {};
         if (req.files) {
             if (req.files.photo) uploads.photo = req.files.photo[0].path.replace(/\\/g, '/'); // Normalize path
