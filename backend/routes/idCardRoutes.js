@@ -7,18 +7,9 @@ const { authenticateToken, requireAdmin } = require('../middleware/auth');
 const controller = require('../controllers/idCardController');
 
 // Configure Multer
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        const uploadPath = path.join(__dirname, '../uploads/idcards');
-        fs.ensureDirSync(uploadPath); // Ensure directory exists
-        cb(null, uploadPath);
-    },
-    filename: function (req, file, cb) {
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-        cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
-    }
-});
+const { storage } = require('../config/cloudinaryConfig');
 
+// Configure Multer with Cloudinary
 const upload = multer({
     storage: storage,
     limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
@@ -30,6 +21,8 @@ const upload = multer({
         }
     }
 });
+
+
 
 // Institution Routes
 router.get('/institution', controller.getInstitutionDetails);
