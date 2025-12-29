@@ -213,7 +213,7 @@ const IDCardApply = () => {
     };
 
     return (
-        <div className="container mx-auto p-6 grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="container mx-auto p-2 md:p-6 grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-8">
             {/* Left Column: Form/Status */}
             <div className="bg-white p-6 rounded-xl shadow-md">
                 <div className="flex justify-between items-center mb-4">

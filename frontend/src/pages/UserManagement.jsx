@@ -62,7 +62,6 @@ const UserManagement = () => {
             contactNumber: user.contactNumber || '',
             profilePhoto: user.profilePhoto || ''
         });
-        // Open modal logic (using DaisyUI modal)
         document.getElementById('edit_user_modal').showModal();
     };
 
@@ -96,81 +95,94 @@ const UserManagement = () => {
     };
 
     return (
-        <div className="card">
-            <h2 style={{ textAlign: 'center', marginBottom: '30px', color: '#333' }}>👥 User Management</h2>
+        <div className="p-2 md:p-6 max-w-7xl mx-auto">
+            <h2 className="text-2xl md:text-3xl font-bold text-center mb-6 md:mb-8 text-primary">👥 User Management</h2>
 
-            <div style={{ marginBottom: '30px' }}>
-                <h3>➕ Add New User</h3>
-                {message.text && <div className={`message ${message.type}`}>{message.text}</div>}
-                <form onSubmit={handleAddUser} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr auto', gap: '10px', alignItems: 'end' }}>
-                    <input
-                        type="text"
-                        className="input"
-                        placeholder="Username"
-                        value={newUser.username}
-                        onChange={e => setNewUser({ ...newUser, username: e.target.value })}
-                        required
-                    />
-                    <input
-                        type="password"
-                        className="input"
-                        placeholder="Password"
-                        value={newUser.password}
-                        onChange={e => setNewUser({ ...newUser, password: e.target.value })}
-                        required
-                    />
-                    <select
-                        className="input"
-                        value={newUser.role}
-                        onChange={e => setNewUser({ ...newUser, role: e.target.value })}
-                        required
-                    >
-                        <option value="member">Member</option>
-                        <option value="admin">Admin</option>
-                    </select>
-                    <button type="submit" className="btn">Add User</button>
-                </form>
+            <div className="card bg-base-100 shadow-xl mb-8">
+                <div className="card-body p-4 md:p-6">
+                    <h3 className="card-title mb-4 text-lg">➕ Add New User</h3>
+                    {message.text && (
+                        <div className={`alert ${message.type === 'success' ? 'alert-success' : 'alert-error'} mb-4 text-sm`}>
+                            <span>{message.text}</span>
+                        </div>
+                    )}
+                    <form onSubmit={handleAddUser} className="flex flex-col md:flex-row gap-4 items-end">
+                        <div className="form-control w-full md:flex-1">
+                            <label className="label py-1"><span className="label-text">Username</span></label>
+                            <input
+                                type="text"
+                                className="input input-bordered w-full"
+                                placeholder="Username"
+                                value={newUser.username}
+                                onChange={e => setNewUser({ ...newUser, username: e.target.value })}
+                                required
+                            />
+                        </div>
+                        <div className="form-control w-full md:flex-1">
+                            <label className="label py-1"><span className="label-text">Password</span></label>
+                            <input
+                                type="password"
+                                className="input input-bordered w-full"
+                                placeholder="Password"
+                                value={newUser.password}
+                                onChange={e => setNewUser({ ...newUser, password: e.target.value })}
+                                required
+                            />
+                        </div>
+                        <div className="form-control w-full md:flex-initial">
+                            <label className="label py-1"><span className="label-text">Role</span></label>
+                            <select
+                                className="select select-bordered w-full"
+                                value={newUser.role}
+                                onChange={e => setNewUser({ ...newUser, role: e.target.value })}
+                                required
+                            >
+                                <option value="member">Member</option>
+                                <option value="admin">Admin</option>
+                            </select>
+                        </div>
+                        <button type="submit" className="btn btn-primary w-full md:w-auto mt-2 md:mt-0">Add User</button>
+                    </form>
+                </div>
             </div>
 
-            <button className="btn" onClick={fetchUsers}>🔄 Refresh Users</button>
+            <div className="flex justify-between items-center mb-4">
+                <h3 className="text-lg font-bold">Current Users ({users.length})</h3>
+                <button className="btn btn-sm btn-outline gap-2" onClick={fetchUsers}>
+                    🔄 <span className="hidden md:inline">Refresh</span>
+                </button>
+            </div>
 
-            <div style={{ marginTop: '20px' }}>
-                <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+            {/* Desktop Table */}
+            <div className="hidden lg:block overflow-x-auto bg-base-100 rounded-box shadow">
+                <table className="table w-full">
                     <thead>
-                        <tr style={{ background: '#f8f9fa', textAlign: 'left' }}>
-                            <th style={{ padding: '12px', borderBottom: '2px solid #dee2e6' }}>Username</th>
-                            <th style={{ padding: '12px', borderBottom: '2px solid #dee2e6' }}>Role</th>
-                            <th style={{ padding: '12px', borderBottom: '2px solid #dee2e6' }}>Created At</th>
-                            <th style={{ padding: '12px', borderBottom: '2px solid #dee2e6' }}>Actions</th>
+                        <tr className="bg-base-200">
+                            <th>Username</th>
+                            <th>Role</th>
+                            <th>Created At</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         {users.slice(0, visibleCount).map(user => (
-                            <tr key={user._id} style={{ borderBottom: '1px solid #dee2e6' }}>
-                                <td style={{ padding: '12px', fontSize: '16px' }}>{user.username}</td>
-                                <td style={{ padding: '12px' }}>
-                                    <span style={{
-                                        padding: '5px 10px',
-                                        borderRadius: '15px',
-                                        background: user.role === 'admin' ? '#e2e3e5' : '#d1ecf1',
-                                        color: user.role === 'admin' ? '#383d41' : '#0c5460',
-                                        fontSize: '14px',
-                                        fontWeight: 'bold'
-                                    }}>
+                            <tr key={user._id} className="hover">
+                                <td className="font-medium text-base">{user.username}</td>
+                                <td>
+                                    <div className={`badge ${user.role === 'admin' ? 'badge-primary' : 'badge-secondary'} badge-outline font-bold`}>
                                         {user.role.toUpperCase()}
-                                    </span>
+                                    </div>
                                 </td>
-                                <td style={{ padding: '12px', fontSize: '16px' }}>{new Date(user.createdAt).toLocaleDateString()}</td>
-                                <td style={{ padding: '12px' }}>
+                                <td>{new Date(user.createdAt).toLocaleDateString()}</td>
+                                <td className="space-x-2">
                                     <button
-                                        className="btn btn-sm btn-primary mr-2 text-sm"
+                                        className="btn btn-sm btn-info btn-outline"
                                         onClick={() => handleEditClick(user)}
                                     >
                                         ✏️ Edit
                                     </button>
                                     <button
-                                        className="btn btn-danger text-sm"
-                                        style={{ padding: '5px 10px' }}
+                                        className="btn btn-sm btn-error btn-outline"
                                         onClick={() => handleDeleteUser(user._id)}
                                     >
                                         🗑️ Delete
@@ -182,14 +194,47 @@ const UserManagement = () => {
                 </table>
             </div>
 
+            {/* Mobile Card View */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:hidden gap-4">
+                {users.slice(0, visibleCount).map(user => (
+                    <div key={user._id} className="card bg-base-100 shadow-md">
+                        <div className="card-body p-4">
+                            <div className="flex justify-between items-start">
+                                <h3 className="card-title text-lg">{user.username}</h3>
+                                <div className={`badge ${user.role === 'admin' ? 'badge-primary' : 'badge-secondary'} badge-outline`}>
+                                    {user.role.toUpperCase()}
+                                </div>
+                            </div>
+                            <div className="text-sm opacity-70 mt-2">
+                                <p>📅 Joined: {new Date(user.createdAt).toLocaleDateString()}</p>
+                            </div>
+                            <div className="card-actions justify-end mt-4">
+                                <button
+                                    className="btn btn-sm btn-info btn-outline flex-1"
+                                    onClick={() => handleEditClick(user)}
+                                >
+                                    ✏️ Edit
+                                </button>
+                                <button
+                                    className="btn btn-sm btn-error btn-outline flex-1"
+                                    onClick={() => handleDeleteUser(user._id)}
+                                >
+                                    🗑️ Delete
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                ))}
+            </div>
+
             {users.length > 3 && (
-                <div className="flex justify-center mt-6">
+                <div className="flex justify-center mt-6 mb-8">
                     {visibleCount < users.length ? (
-                        <button className="btn btn-outline btn-primary" onClick={() => setVisibleCount(prev => prev + 3)}>
-                            View More
+                        <button className="btn btn-outline btn-primary w-full md:w-auto" onClick={() => setVisibleCount(prev => prev + 3)}>
+                            View More Users
                         </button>
                     ) : (
-                        <button className="btn btn-outline" onClick={() => setVisibleCount(3)}>
+                        <button className="btn btn-outline w-full md:w-auto" onClick={() => setVisibleCount(3)}>
                             Show Less
                         </button>
                     )}
@@ -197,7 +242,7 @@ const UserManagement = () => {
             )}
 
             {/* Edit User Modal */}
-            <dialog id="edit_user_modal" className="modal">
+            <dialog id="edit_user_modal" className="modal modal-bottom sm:modal-middle">
                 <div className="modal-box">
                     <h3 className="font-bold text-lg">Edit User: {editingUser?.username}</h3>
                     <form onSubmit={handleUpdateUser} className="py-4 space-y-4">
@@ -248,8 +293,8 @@ const UserManagement = () => {
                                 className="file-input file-input-bordered w-full"
                             />
                             {editFormData.profilePhoto && (
-                                <div className="mt-2">
-                                    <img src={editFormData.profilePhoto} alt="Preview" className="w-20 h-20 rounded-full object-cover" />
+                                <div className="mt-2 flex justify-center">
+                                    <img src={editFormData.profilePhoto} alt="Preview" className="w-20 h-20 rounded-full object-cover border-2 border-primary" />
                                 </div>
                             )}
                         </div>
@@ -259,6 +304,9 @@ const UserManagement = () => {
                         </div>
                     </form>
                 </div>
+                <form method="dialog" className="modal-backdrop">
+                    <button>close</button>
+                </form>
             </dialog>
         </div>
     );
