@@ -234,15 +234,15 @@ const IDCardApply = () => {
     };
 
     return (
-        <div className="container mx-auto p-2 md:p-6 grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-8">
+        <div className="container mx-auto p-4 md:p-6 grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8">
             {/* Left Column: Form/Status */}
-            <div className="bg-white p-6 rounded-xl shadow-md">
-                <div className="flex justify-between items-center mb-4">
-                    <h1 className="text-2xl font-bold text-gray-800">Student ID Card Application</h1>
+            <div className="bg-white p-4 md:p-6 rounded-xl shadow-md w-full">
+                <div className="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
+                    <h1 className="text-xl md:text-2xl font-bold text-gray-800 text-center md:text-left">Student ID Card Application</h1>
                     {status === 'approved' && !isEditing && (
                         <button
                             onClick={() => setIsEditing(true)}
-                            className="bg-indigo-100 text-indigo-700 px-3 py-1 rounded text-sm font-semibold hover:bg-indigo-200"
+                            className="bg-indigo-100 text-indigo-700 px-4 py-2 rounded-lg text-sm font-bold hover:bg-indigo-200 transition w-full md:w-auto"
                         >
                             ✏️ Edit Details
                         </button>
@@ -250,50 +250,50 @@ const IDCardApply = () => {
                 </div>
 
                 {status && (
-                    <div className={`mb-6 p-4 rounded-lg flex flex-col gap-2 ${status === 'approved' ? 'bg-green-100 text-green-800' :
-                        status === 'rejected' ? 'bg-red-100 text-red-800' :
-                            'bg-yellow-100 text-yellow-800'
+                    <div className={`mb-6 p-4 rounded-lg flex flex-col gap-2 border-l-4 ${status === 'approved' ? 'bg-green-50 border-green-500 text-green-800' :
+                        status === 'rejected' ? 'bg-red-50 border-red-500 text-red-800' :
+                            'bg-yellow-50 border-yellow-500 text-yellow-800'
                         }`}>
                         <div className="font-bold uppercase tracking-wider text-sm">Status: {status}</div>
-                        {status === 'rejected' && <div className="text-sm">Reason: {rejectionReason}</div>}
-                        {status === 'approved' && <div className="text-sm">Your card is ready! Use the Download button to save it.</div>}
+                        {status === 'rejected' && <div className="text-sm mt-1">Reason: {rejectionReason}</div>}
+                        {status === 'approved' && <div className="text-sm mt-1">Your card is ready! Use the Download button to save it.</div>}
                     </div>
                 )}
 
-                <form onSubmit={handleSubmit} className="space-y-4">
+                <form onSubmit={handleSubmit} className="space-y-6">
                     {/* Personal Details Section */}
-                    <fieldset className="border p-4 rounded-lg" disabled={isReadOnly}>
-                        <legend className="font-semibold px-2 text-indigo-600">Personal Details</legend>
+                    <fieldset className="border-2 border-indigo-100 p-4 rounded-xl" disabled={isReadOnly}>
+                        <legend className="font-bold px-2 text-indigo-600 text-lg">Personal Details</legend>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
-                                <label className="label">Name</label>
-                                <input type="text" name="name" value={formData.name} onChange={handleChange} required className="input w-full p-2 border rounded" />
+                                <label className="label block font-semibold mb-1 text-gray-700">Name</label>
+                                <input type="text" name="name" value={formData.name} onChange={handleChange} required className="input w-full p-3 border-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:ring-0 text-base min-h-[48px]" />
                             </div>
                             <div>
-                                <label className="label">Father Name</label>
-                                <input type="text" name="fatherName" value={formData.fatherName} onChange={handleChange} required className="input w-full p-2 border rounded" />
+                                <label className="label block font-semibold mb-1 text-gray-700">Father Name</label>
+                                <input type="text" name="fatherName" value={formData.fatherName} onChange={handleChange} required className="input w-full p-3 border-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:ring-0 text-base min-h-[48px]" />
                             </div>
                             <div>
-                                <label className="label">Mother Name</label>
-                                <input type="text" name="motherName" value={formData.motherName} onChange={handleChange} required className="input w-full p-2 border rounded" />
+                                <label className="label block font-semibold mb-1 text-gray-700">Mother Name</label>
+                                <input type="text" name="motherName" value={formData.motherName} onChange={handleChange} required className="input w-full p-3 border-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:ring-0 text-base min-h-[48px]" />
                             </div>
                             <div>
-                                <label className="label">DOB</label>
-                                <input type="date" name="dob" value={formData.dob} onChange={handleChange} required className="input w-full p-2 border rounded" />
+                                <label className="label block font-semibold mb-1 text-gray-700">Date of Birth</label>
+                                <input type="date" name="dob" value={formData.dob} onChange={handleChange} required className="input w-full p-3 border-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:ring-0 text-base min-h-[48px] bg-white" />
                             </div>
                             <div>
-                                <label className="label">Gender</label>
-                                <select name="gender" value={formData.gender} onChange={handleChange} required className="input w-full p-2 border rounded">
-                                    <option value="">Select</option>
+                                <label className="label block font-semibold mb-1 text-gray-700">Gender</label>
+                                <select name="gender" value={formData.gender} onChange={handleChange} required className="select w-full p-3 border-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:ring-0 text-base min-h-[48px] bg-white">
+                                    <option value="">Select Gender</option>
                                     <option value="Male">Male</option>
                                     <option value="Female">Female</option>
                                     <option value="Other">Other</option>
                                 </select>
                             </div>
                             <div>
-                                <label className="label">Category</label>
-                                <select name="category" value={formData.category} onChange={handleChange} required className="input w-full p-2 border rounded">
-                                    <option value="">Select</option>
+                                <label className="label block font-semibold mb-1 text-gray-700">Category</label>
+                                <select name="category" value={formData.category} onChange={handleChange} required className="select w-full p-3 border-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:ring-0 text-base min-h-[48px] bg-white">
+                                    <option value="">Select Category</option>
                                     <option value="General">General</option>
                                     <option value="OBC">OBC</option>
                                     <option value="SC">SC</option>
@@ -301,70 +301,72 @@ const IDCardApply = () => {
                                 </select>
                             </div>
                             <div>
-                                <label className="label">Blood Group</label>
-                                <input type="text" name="bloodGroup" value={formData.bloodGroup} onChange={handleChange} className="input w-full p-2 border rounded" />
+                                <label className="label block font-semibold mb-1 text-gray-700">Blood Group</label>
+                                <input type="text" name="bloodGroup" value={formData.bloodGroup} onChange={handleChange} className="input w-full p-3 border-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:ring-0 text-base min-h-[48px]" placeholder="e.g. O+" />
                             </div>
                             <div>
-                                <label className="label">Mobile</label>
-                                <input type="tel" name="mobileNumber" value={formData.mobileNumber} onChange={handleChange} required className="input w-full p-2 border rounded" />
+                                <label className="label block font-semibold mb-1 text-gray-700">Mobile Number</label>
+                                <input type="tel" name="mobileNumber" value={formData.mobileNumber} onChange={handleChange} required className="input w-full p-3 border-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:ring-0 text-base min-h-[48px]" />
                             </div>
-                            <div className="col-span-2">
-                                <label className="label">Full Address</label>
-                                <textarea name="address" value={formData.address} onChange={handleChange} required className="input w-full p-2 border rounded h-20"></textarea>
+                            <div className="col-span-1 md:col-span-2">
+                                <label className="label block font-semibold mb-1 text-gray-700">Full Address</label>
+                                <textarea name="address" value={formData.address} onChange={handleChange} required className="textarea w-full p-3 border-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:ring-0 text-base min-h-[80px]" rows="3"></textarea>
                             </div>
                         </div>
                     </fieldset>
 
                     {/* Academic Details Section */}
-                    <fieldset className="border p-4 rounded-lg" disabled={isReadOnly}>
-                        <legend className="font-semibold px-2 text-indigo-600">Academic Details</legend>
+                    <fieldset className="border-2 border-indigo-100 p-4 rounded-xl" disabled={isReadOnly}>
+                        <legend className="font-bold px-2 text-indigo-600 text-lg">Academic Details</legend>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
-                                <label className="label">Course/Class</label>
-                                <input type="text" name="course" value={formData.course} onChange={handleChange} required className="input w-full p-2 border rounded" placeholder="e.g. B.Sc CS" />
+                                <label className="label block font-semibold mb-1 text-gray-700">Course/Class</label>
+                                <input type="text" name="course" value={formData.course} onChange={handleChange} required className="input w-full p-3 border-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:ring-0 text-base min-h-[48px]" placeholder="e.g. B.Sc CS" />
                             </div>
                             <div>
-                                <label className="label">Session</label>
-                                <input type="text" name="session" value={formData.session} onChange={handleChange} required className="input w-full p-2 border rounded" />
+                                <label className="label block font-semibold mb-1 text-gray-700">Session</label>
+                                <input type="text" name="session" value={formData.session} onChange={handleChange} required className="input w-full p-3 border-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:ring-0 text-base min-h-[48px]" placeholder="e.g. 2024-25" />
                             </div>
                             <div>
-                                <label className="label">Admission Number</label>
-                                <input type="text" name="admissionNumber" value={formData.admissionNumber} onChange={handleChange} className="input w-full p-2 border rounded" placeholder="Auto-generated if empty" />
+                                <label className="label block font-semibold mb-1 text-gray-700">Admission Number</label>
+                                <input type="text" name="admissionNumber" value={formData.admissionNumber} onChange={handleChange} className="input w-full p-3 border-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:ring-0 text-base min-h-[48px]" placeholder="Auto-generated if empty" />
                             </div>
                             <div>
-                                <label className="label">Enrollment No.</label>
-                                <input type="text" name="enrollmentNumber" value={formData.enrollmentNumber} onChange={handleChange} required className="input w-full p-2 border rounded" />
+                                <label className="label block font-semibold mb-1 text-gray-700">Enrollment No.</label>
+                                <input type="text" name="enrollmentNumber" value={formData.enrollmentNumber} onChange={handleChange} required className="input w-full p-3 border-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:ring-0 text-base min-h-[48px]" />
                             </div>
                             <div>
-                                <label className="label">Admission Date</label>
-                                <input type="date" name="admissionDate" value={formData.admissionDate} onChange={handleChange} required className="input w-full p-2 border rounded" />
+                                <label className="label block font-semibold mb-1 text-gray-700">Admission Date</label>
+                                <input type="date" name="admissionDate" value={formData.admissionDate} onChange={handleChange} required className="input w-full p-3 border-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:ring-0 text-base min-h-[48px] bg-white" />
                             </div>
                         </div>
                     </fieldset>
 
                     {/* Uploads Section */}
-                    <fieldset className="border p-4 rounded-lg" disabled={isReadOnly}>
-                        <legend className="font-semibold px-2 text-indigo-600">Uploads</legend>
-                        <div className="grid grid-cols-1 gap-4">
-                            <div>
-                                <label className="label">Student Photo</label>
-                                <input type="file" name="photo" onChange={handleFileChange} accept="image/*" required={!files.photoPreview} className="file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100" />
+                    <fieldset className="border-2 border-indigo-100 p-4 rounded-xl" disabled={isReadOnly}>
+                        <legend className="font-bold px-2 text-indigo-600 text-lg">Uploads</legend>
+                        <div className="grid grid-cols-1 gap-6">
+                            <div className="form-control">
+                                <label className="label block font-semibold mb-2 text-gray-700">Student Photo</label>
+                                <input type="file" name="photo" onChange={handleFileChange} accept="image/*" required={!files.photoPreview} className="file-input file-input-bordered file-input-primary w-full max-w-full" />
+                                <span className="text-xs text-gray-500 mt-1 block">Supported: JPG, PNG (Max 2MB)</span>
                             </div>
-                            <div>
-                                <label className="label">Student Signature</label>
-                                <input type="file" name="signature" onChange={handleFileChange} accept="image/*" className="file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100" />
+                            <div className="form-control">
+                                <label className="label block font-semibold mb-2 text-gray-700">Student Signature</label>
+                                <input type="file" name="signature" onChange={handleFileChange} accept="image/*" className="file-input file-input-bordered file-input-primary w-full max-w-full" />
+                                <span className="text-xs text-gray-500 mt-1 block">Supported: JPG, PNG (Max 2MB)</span>
                             </div>
                         </div>
                     </fieldset>
 
                     {!isReadOnly && (
-                        <div className="flex gap-2">
+                        <div className="flex flex-col md:flex-row gap-3 mt-6">
                             {isEditing && (
-                                <button type="button" onClick={() => setIsEditing(false)} className="flex-1 bg-gray-500 text-white py-3 rounded-lg font-bold hover:bg-gray-600 transition">
+                                <button type="button" onClick={() => setIsEditing(false)} className="flex-1 bg-gray-500 text-white py-4 rounded-xl font-bold hover:bg-gray-600 transition shadow-lg text-lg">
                                     Cancel
                                 </button>
                             )}
-                            <button type="submit" className="flex-1 bg-indigo-600 text-white py-3 rounded-lg font-bold hover:bg-indigo-700 transition">
+                            <button type="submit" className="flex-1 bg-indigo-600 text-white py-4 rounded-xl font-bold hover:bg-indigo-700 transition shadow-indigo-200 shadow-lg text-lg">
                                 {status === 'approved' ? 'Update Details' : (status === 'rejected' ? 'Resubmit Application' : 'Submit Application')}
                             </button>
                         </div>
