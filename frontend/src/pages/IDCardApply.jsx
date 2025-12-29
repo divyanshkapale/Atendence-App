@@ -185,14 +185,22 @@ const IDCardApply = () => {
         if (!element) return;
 
         try {
-            const dataUrl = await toPng(element, { quality: 1.0, pixelRatio: 2 });
+            // Wait a moment for images to load
+            await new Promise(resolve => setTimeout(resolve, 500));
+
+            const dataUrl = await toPng(element, {
+                quality: 1.0,
+                pixelRatio: 3, // Higher resolution
+                cacheBust: true,
+                skipAutoScale: true
+            });
             const link = document.createElement('a');
             link.download = `Student_ID_${formData.enrollmentNumber || 'Card'}.png`;
             link.href = dataUrl;
             link.click();
         } catch (error) {
-            console.error('Could not generate image', error);
-            alert('Failed to download image');
+            console.error('Could not generate image:', error);
+            alert('Failed to download image. Try using a newer browser or refreshing.');
         }
     };
 
