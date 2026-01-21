@@ -79,12 +79,13 @@ router.post('/login', async (req, res) => {
         const { username, password } = req.body;
 
         if (!username || !password) {
-            return res.status(400).json({ error: 'Enrollment Number/Phone and password are required' });
+            return res.status(400).json({ error: 'Username/ID/Phone and password are required' });
         }
 
-        // Search by Enrollment Number OR Contact Number ONLY
+        // Search by Username (for admin), Enrollment Number OR Contact Number
         const user = await User.findOne({
             $or: [
+                { username: username }, // allow admin login by username
                 { enrollmentNumber: username },
                 { contactNumber: username }
             ]
