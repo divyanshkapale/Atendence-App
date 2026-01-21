@@ -71,38 +71,7 @@ router.post('/signup', async (req, res) => {
     }
 });
 
-// Login via Enrollment Number (No Password)
-router.post('/login-enrollment', async (req, res) => {
-    try {
-        const { enrollmentNumber } = req.body;
-        if (!enrollmentNumber) return res.status(400).json({ error: 'Enrollment Number or Phone Number required' });
 
-        // Search by Enrollment Number OR Contact Number ONLY
-        const user = await User.findOne({
-            $or: [
-                { enrollmentNumber: enrollmentNumber }, // exact match
-                { contactNumber: enrollmentNumber }     // input might be phone number
-            ]
-        });
-
-        if (!user) {
-            return res.status(404).json({ error: 'Student not found with this ID or Phone Number' });
-        }
-
-        const token = jwt.sign({ userId: user._id }, JWT_SECRET, { expiresIn: '24h' });
-
-        res.cookie('token', token, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
-            maxAge: 24 * 60 * 60 * 1000 // 24 hours
-        });
-
-        res.json({ message: 'Quick Login successful', user: user.toJSON(), token });
-    } catch (error) {
-        res.status(500).json({ error: 'Error logging in: ' + error.message });
-    }
-});
 
 // Login
 router.post('/login', async (req, res) => {
