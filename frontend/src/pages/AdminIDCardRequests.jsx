@@ -8,10 +8,6 @@ const AdminIDCardRequests = () => {
     const [filterStatus, setFilterStatus] = useState('all');
     const [loading, setLoading] = useState(true);
 
-    // Institution Settings Form
-    const [instFiles, setInstFiles] = useState({ sealImage: null, principalSignature: null });
-    const [showInstModal, setShowInstModal] = useState(false);
-
     useEffect(() => {
         fetchInstitutionDetails();
         fetchRequests();
@@ -68,40 +64,9 @@ const AdminIDCardRequests = () => {
         }
     };
 
-    const handleInstSubmit = async (e) => {
-        e.preventDefault();
-        const token = localStorage.getItem('token');
-        const formData = new FormData();
-        if (instFiles.sealImage) formData.append('sealImage', instFiles.sealImage);
-        if (instFiles.principalSignature) formData.append('principalSignature', instFiles.principalSignature);
-
-        try {
-            const res = await fetch('/api/id-card/institution', {
-                method: 'PUT',
-                headers: { 'Authorization': `Bearer ${token}` },
-                body: formData
-            });
-            if (res.ok) {
-                alert('Institution details updated');
-                fetchInstitutionDetails();
-                setShowInstModal(false);
-            }
-        } catch (error) {
-            console.error(error);
-        }
-    };
-
     return (
         <div className="p-6">
-            <div className="flex justify-between items-center mb-6">
-                <h1 className="text-2xl font-bold text-gray-800">Student ID Card Administration</h1>
-                <button
-                    onClick={() => setShowInstModal(true)}
-                    className="bg-gray-800 text-white px-4 py-2 rounded hover:bg-gray-700 transition"
-                >
-                    ⚙️ Institution Settings
-                </button>
-            </div>
+
 
             {/* Filter */}
             <div className="flex gap-2 mb-6">
@@ -258,29 +223,7 @@ const AdminIDCardRequests = () => {
                 </div>
             )}
 
-            {/* Modal for Institution Settings */}
-            {showInstModal && (
-                <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-                    <div className="bg-white rounded-xl shadow-2xl max-w-lg w-full p-6">
-                        <h3 className="text-xl font-bold mb-4">Edit Institution Details</h3>
-                        <form onSubmit={handleInstSubmit} className="space-y-4">
-                            <div>
-                                <label className="block mb-1 font-semibold">College Seal</label>
-                                <input type="file" accept="image/*" onChange={e => setInstFiles(p => ({ ...p, sealImage: e.target.files[0] }))} className="w-full" />
-                                {institutionData?.sealImage && <p className="text-xs text-gray-500 mt-1">Current seal exists</p>}
-                            </div>
-                            <div>
-                                <label className="block mb-1 font-semibold">Principal Signature</label>
-                                <input type="file" accept="image/*" onChange={e => setInstFiles(p => ({ ...p, principalSignature: e.target.files[0] }))} className="w-full" />
-                            </div>
-                            <div className="flex justify-end gap-2 mt-6">
-                                <button type="button" onClick={() => setShowInstModal(false)} className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded">Cancel</button>
-                                <button type="submit" className="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700">Save Changes</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            )}
+            {/* Institution Settings Modal removed */}
         </div>
     );
 };

@@ -139,13 +139,21 @@ router.get('/users', authenticateToken, requireAdmin, async (req, res) => {
 router.put('/users/:id', authenticateToken, requireAdmin, async (req, res) => {
     try {
         const { id } = req.params;
-        const { enrollmentNumber, email, contactNumber, profilePhoto } = req.body;
+        const { username, enrollmentNumber, email, contactNumber, profilePhoto } = req.body;
         console.log(`Updating user with ID: ${id}`);
 
         const user = await User.findById(id);
-        console.log('User found:', user ? 'Yes' : 'No');
         if (!user) {
             return res.status(404).json({ error: 'User not found' });
+        }
+
+        // Check uniqueness if username is changing
+        if (username && username !== user.username) {
+            const existingUser = await User.findOne({ username });
+            if (existingUser) {
+                return res.status(400).json({ error: 'Username already exists' });
+            }
+            user.username = username;
         }
 
         user.enrollmentNumber = enrollmentNumber;
@@ -157,8 +165,23 @@ router.put('/users/:id', authenticateToken, requireAdmin, async (req, res) => {
 
         await user.save();
 
+        // Sync changes to ID Card if exists
+        const IDCard = require('../models/IDCard');
+        const idCard = await IDCard.findOne({ student: id });
+
+        if (idCard) {
+            console.log('Syncing changes to ID Card for user:', id);
+            if (username) idCard.personalDetails.name = username;
+            if (enrollmentNumber) idCard.academicDetails.enrollmentNumber = enrollmentNumber;
+            if (contactNumber) idCard.personalDetails.mobileNumber = contactNumber;
+            if (profilePhoto) idCard.uploads.photo = profilePhoto;
+
+            await idCard.save();
+        }
+
         res.json({ message: 'User updated successfully', user: user.toJSON() });
     } catch (error) {
+        console.error('Update error:', error);
         res.status(500).json({ error: 'Error updating user: ' + error.message });
     }
 });

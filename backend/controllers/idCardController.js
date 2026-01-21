@@ -17,33 +17,7 @@ const getInstitutionDetails = async (req, res) => {
     }
 };
 
-// Update institution details
-const updateInstitutionDetails = async (req, res) => {
-    try {
-        // Handle file uploads if present
-        let updateData = { ...req.body };
 
-        if (req.files) {
-            if (req.files.sealImage) {
-                updateData.sealImage = req.files.sealImage[0].path;
-            }
-            if (req.files.principalSignature) {
-                updateData.principalSignature = req.files.principalSignature[0].path;
-            }
-        }
-
-        let inst = await Institution.findOne();
-        if (!inst) {
-            inst = new Institution(updateData);
-        } else {
-            Object.assign(inst, updateData);
-        }
-        await inst.save();
-        res.json(inst);
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-};
 
 // Student Apply or Update
 const applyForIDCard = async (req, res) => {
@@ -199,7 +173,6 @@ const updateIDCardStatus = async (req, res) => {
 
 module.exports = {
     getInstitutionDetails,
-    updateInstitutionDetails,
     applyForIDCard,
     getMyIDCard,
     getAllIDCards,

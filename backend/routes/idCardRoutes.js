@@ -26,10 +26,7 @@ const upload = multer({
 
 // Institution Routes
 router.get('/institution', controller.getInstitutionDetails);
-router.put('/institution', authenticateToken, requireAdmin, upload.fields([
-    { name: 'sealImage', maxCount: 1 },
-    { name: 'principalSignature', maxCount: 1 }
-]), controller.updateInstitutionDetails);
+
 
 // ID Card Routes
 router.post('/apply', authenticateToken, upload.fields([

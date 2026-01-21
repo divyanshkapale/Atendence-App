@@ -7,6 +7,7 @@ const UserManagement = () => {
     const [message, setMessage] = useState({ text: '', type: '' });
     const [editingUser, setEditingUser] = useState(null);
     const [editFormData, setEditFormData] = useState({
+        username: '',
         enrollmentNumber: '',
         email: '',
         contactNumber: '',
@@ -57,6 +58,7 @@ const UserManagement = () => {
     const handleEditClick = (user) => {
         setEditingUser(user);
         setEditFormData({
+            username: user.username || '',
             enrollmentNumber: user.enrollmentNumber || '',
             email: user.email || '',
             contactNumber: user.contactNumber || '',
@@ -246,6 +248,19 @@ const UserManagement = () => {
                 <div className="modal-box">
                     <h3 className="font-bold text-lg">Edit User: {editingUser?.username}</h3>
                     <form onSubmit={handleUpdateUser} className="py-4 space-y-4">
+                        <div className="form-control">
+                            <label className="label">
+                                <span className="label-text">Username (Name)</span>
+                            </label>
+                            <input
+                                type="text"
+                                name="username"
+                                value={editFormData.username}
+                                onChange={handleEditChange}
+                                className="input input-bordered w-full"
+                                required
+                            />
+                        </div>
                         <div className="form-control">
                             <label className="label">
                                 <span className="label-text">Enrollment Number</span>
