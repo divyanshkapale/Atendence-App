@@ -17,6 +17,25 @@ const Attendance = () => {
 
     useEffect(() => {
         checkUploadStatus();
+
+        const checkAutoStart = async () => {
+            try {
+                if (navigator.permissions && navigator.permissions.query) {
+                    const cameraCheck = await navigator.permissions.query({ name: 'camera' }).catch(err => ({ state: 'prompt' }));
+                    const locationCheck = await navigator.permissions.query({ name: 'geolocation' }).catch(err => ({ state: 'prompt' }));
+
+                    // If previously allowed, start automatically
+                    if (cameraCheck.state === 'granted' && locationCheck.state === 'granted') {
+                        startCamera();
+                    }
+                }
+            } catch (err) {
+                console.log("Auto-start check failed:", err);
+            }
+        };
+
+        checkAutoStart();
+
         return () => stopCamera();
     }, []);
 
@@ -34,12 +53,26 @@ const Attendance = () => {
 
     const startCamera = async () => {
         setError('');
+
+        // Initialize camera immediately (don't wait for location)
+        initCamera();
+
         try {
-            // Get location first
+            // Get location
             const loc = await getLocation();
             setLocation(loc);
+        } catch (err) {
+            // If location fails, show manual input but keep camera running
+            if (err.message.includes('Location') || err.message.includes('Geolocation')) {
+                setShowManualLocation(true);
+            } else {
+                setError(err.message);
+            }
+        }
+    };
 
-            // Start camera
+    const initCamera = async () => {
+        try {
             const constraints = {
                 video: {
                     width: { ideal: 640, max: 1280 },
@@ -53,9 +86,20 @@ const Attendance = () => {
                 videoRef.current.srcObject = mediaStream;
             }
         } catch (err) {
-            setError(err.message);
-            if (err.message.includes('Location')) {
-                setShowManualLocation(true);
+            console.log("Primary camera constraints failed, trying fallback...", err);
+            try {
+                // Fallback to basic video requirements for wider compatibility (Desktop/Server)
+                const mediaStream = await navigator.mediaDevices.getUserMedia({ video: true });
+                setStream(mediaStream);
+                if (videoRef.current) {
+                    videoRef.current.srcObject = mediaStream;
+                }
+            } catch (fallbackErr) {
+                if (fallbackErr.name === 'NotAllowedError' || fallbackErr.name === 'PermissionDeniedError') {
+                    setError('Camera access blocked. Please reset permissions in your browser address bar (lock icon) and reload.');
+                } else {
+                    setError('Camera access failed: ' + fallbackErr.message);
+                }
             }
         }
     };
@@ -128,15 +172,10 @@ const Attendance = () => {
         setShowManualLocation(false);
         setError('');
 
-        // Start camera after manual location
-        navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } })
-            .then(mediaStream => {
-                setStream(mediaStream);
-                if (videoRef.current) {
-                    videoRef.current.srcObject = mediaStream;
-                }
-            })
-            .catch(err => setError('Camera error: ' + err.message));
+        // Start camera if not already active
+        if (!stream) {
+            initCamera();
+        }
     };
 
     const uploadAttendance = async () => {
