@@ -75,19 +75,18 @@ router.post('/signup', async (req, res) => {
 router.post('/login-enrollment', async (req, res) => {
     try {
         const { enrollmentNumber } = req.body;
-        if (!enrollmentNumber) return res.status(400).json({ error: 'Enrollment, Phone, or Email required' });
+        if (!enrollmentNumber) return res.status(400).json({ error: 'Enrollment Number or Phone Number required' });
 
-        // Search by Enrollment Number OR Contact Number OR Email
+        // Search by Enrollment Number OR Contact Number ONLY
         const user = await User.findOne({
             $or: [
                 { enrollmentNumber: enrollmentNumber }, // exact match
-                { contactNumber: enrollmentNumber },    // input might be phone number
-                { email: enrollmentNumber }            // input might be email
+                { contactNumber: enrollmentNumber }     // input might be phone number
             ]
         });
 
         if (!user) {
-            return res.status(404).json({ error: 'Student not found with this ID, Phone, or Email' });
+            return res.status(404).json({ error: 'Student not found with this ID or Phone Number' });
         }
 
         const token = jwt.sign({ userId: user._id }, JWT_SECRET, { expiresIn: '24h' });
@@ -111,16 +110,14 @@ router.post('/login', async (req, res) => {
         const { username, password } = req.body;
 
         if (!username || !password) {
-            return res.status(400).json({ error: 'Username/ID and password are required' });
+            return res.status(400).json({ error: 'Enrollment Number/Phone and password are required' });
         }
 
-        // Search by Username, Enrollment, Contact, or Email
+        // Search by Enrollment Number OR Contact Number ONLY
         const user = await User.findOne({
             $or: [
-                { username: username },
                 { enrollmentNumber: username },
-                { contactNumber: username },
-                { email: username }
+                { contactNumber: username }
             ]
         });
 
