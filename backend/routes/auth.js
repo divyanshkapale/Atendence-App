@@ -215,6 +215,10 @@ router.delete('/users/:id', authenticateToken, requireAdmin, async (req, res) =>
         const Attendance = require('../models/Attendance');
         await Attendance.deleteMany({ userId: id });
 
+        // Also delete ID Card request
+        const IDCard = require('../models/IDCard');
+        await IDCard.deleteMany({ student: id });
+
         res.json({ message: 'User deleted successfully' });
     } catch (error) {
         res.status(500).json({ error: 'Error deleting user: ' + error.message });
