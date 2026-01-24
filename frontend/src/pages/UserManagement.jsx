@@ -14,18 +14,35 @@ const UserManagement = () => {
         profilePhoto: ''
     });
     const [visibleCount, setVisibleCount] = useState(3);
+    const [searchTerm, setSearchTerm] = useState('');
 
     useEffect(() => {
         fetchUsers();
     }, []);
 
-    const fetchUsers = async () => {
+    const fetchUsers = async (termOverride = null) => {
         try {
-            const response = await axios.get('/api/auth/users');
+            // If termOverride is a string (e.g. from clear search), use it.
+            // Otherwise (null, undefined, or Event object from click), use current state.
+            const term = typeof termOverride === 'string' ? termOverride : searchTerm;
+            const params = {};
+            if (term) params.search = term;
+
+            const response = await axios.get('/api/auth/users', { params });
             setUsers(response.data);
         } catch (error) {
             console.error('Error fetching users:', error);
         }
+    };
+
+    const handleSearch = (e) => {
+        e.preventDefault();
+        fetchUsers();
+    };
+
+    const handleClearSearch = () => {
+        setSearchTerm('');
+        fetchUsers('');
     };
 
     const handleAddUser = async (e) => {
@@ -144,6 +161,30 @@ const UserManagement = () => {
                             </select>
                         </div>
                         <button type="submit" className="btn btn-primary w-full md:w-auto mt-2 md:mt-0">Add User</button>
+                    </form>
+                </div>
+            </div>
+
+            {/* Search Section */}
+            <div className="card bg-base-100 shadow-xl mb-8">
+                <div className="card-body p-4 md:p-6">
+                    <h3 className="card-title mb-4 text-lg">🔍 Search Students</h3>
+                    <form onSubmit={handleSearch} className="flex flex-col md:flex-row gap-4">
+                        <input
+                            type="text"
+                            placeholder="Search by Name, Enrollment No, or Phone..."
+                            className="input input-bordered w-full"
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                        />
+                        <button type="submit" className="btn btn-secondary w-full md:w-auto">
+                            Search
+                        </button>
+                        {searchTerm && (
+                            <button type="button" className="btn btn-ghost w-full md:w-auto" onClick={handleClearSearch}>
+                                Clear
+                            </button>
+                        )}
                     </form>
                 </div>
             </div>

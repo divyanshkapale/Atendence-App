@@ -126,10 +126,24 @@ router.get('/me', authenticateToken, (req, res) => {
     res.json({ user: req.user });
 });
 
-// Get all users (admin only)
+// Get all users (admin only) - Supports search
 router.get('/users', authenticateToken, requireAdmin, async (req, res) => {
     try {
-        const users = await User.findAllWithoutPassword();
+        const { search } = req.query;
+        let query = {};
+
+        if (search) {
+            const searchRegex = new RegExp(search, 'i'); // Case-insensitive
+            query = {
+                $or: [
+                    { username: searchRegex },
+                    { enrollmentNumber: searchRegex },
+                    { contactNumber: searchRegex }
+                ]
+            };
+        }
+
+        const users = await User.find(query).select('-password').sort({ createdAt: -1 });
         res.json(users);
     } catch (error) {
         res.status(500).json({ error: 'Error fetching users: ' + error.message });
