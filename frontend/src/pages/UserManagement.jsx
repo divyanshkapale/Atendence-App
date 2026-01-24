@@ -15,12 +15,14 @@ const UserManagement = () => {
     });
     const [visibleCount, setVisibleCount] = useState(3);
     const [searchTerm, setSearchTerm] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
         fetchUsers();
     }, []);
 
     const fetchUsers = async (termOverride = null) => {
+        setIsLoading(true);
         try {
             // If termOverride is a string (e.g. from clear search), use it.
             // Otherwise (null, undefined, or Event object from click), use current state.
@@ -32,6 +34,9 @@ const UserManagement = () => {
             setUsers(response.data);
         } catch (error) {
             console.error('Error fetching users:', error);
+            setMessage({ text: 'Failed to fetch users', type: 'error' });
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -177,10 +182,17 @@ const UserManagement = () => {
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
                         />
-                        <button type="submit" className="btn btn-secondary w-full md:w-auto">
-                            Search
+                        <button type="submit" className="btn btn-secondary w-full md:w-auto" disabled={isLoading}>
+                            {isLoading ? (
+                                <>
+                                    <span className="loading loading-spinner loading-sm"></span>
+                                    Searching...
+                                </>
+                            ) : (
+                                'Search'
+                            )}
                         </button>
-                        {searchTerm && (
+                        {searchTerm && !isLoading && (
                             <button type="button" className="btn btn-ghost w-full md:w-auto" onClick={handleClearSearch}>
                                 Clear
                             </button>
@@ -191,96 +203,111 @@ const UserManagement = () => {
 
             <div className="flex justify-between items-center mb-4">
                 <h3 className="text-lg font-bold">Current Users ({users.length})</h3>
-                <button className="btn btn-sm btn-outline gap-2" onClick={fetchUsers}>
-                    🔄 <span className="hidden md:inline">Refresh</span>
+                <button className="btn btn-sm btn-outline gap-2" onClick={() => fetchUsers()} disabled={isLoading}>
+                    <span className={isLoading ? "loading loading-spinner loading-xs" : ""}></span>
+                    <span className="hidden md:inline">{isLoading ? 'Refreshing...' : 'Refresh'}</span>
                 </button>
             </div>
 
-            {/* Desktop Table */}
-            <div className="hidden lg:block overflow-x-auto bg-base-100 rounded-box shadow">
-                <table className="table w-full">
-                    <thead>
-                        <tr className="bg-base-200">
-                            <th>Username</th>
-                            <th>Role</th>
-                            <th>Created At</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {users.slice(0, visibleCount).map(user => (
-                            <tr key={user._id} className="hover">
-                                <td className="font-medium text-base">{user.username}</td>
-                                <td>
-                                    <div className={`badge ${user.role === 'admin' ? 'badge-primary' : 'badge-secondary'} badge-outline font-bold`}>
-                                        {user.role.toUpperCase()}
-                                    </div>
-                                </td>
-                                <td>{new Date(user.createdAt).toLocaleDateString()}</td>
-                                <td className="space-x-2">
-                                    <button
-                                        className="btn btn-sm btn-info btn-outline"
-                                        onClick={() => handleEditClick(user)}
-                                    >
-                                        ✏️ Edit
-                                    </button>
-                                    <button
-                                        className="btn btn-sm btn-error btn-outline"
-                                        onClick={() => handleDeleteUser(user._id)}
-                                    >
-                                        🗑️ Delete
-                                    </button>
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </div>
+            {isLoading ? (
+                <div className="flex justify-center items-center py-12">
+                    <span className="loading loading-spinner loading-lg text-primary"></span>
+                </div>
+            ) : (
+                <>
+                    {/* Desktop Table */}
+                    <div className="hidden lg:block overflow-x-auto bg-base-100 rounded-box shadow">
+                        <table className="table w-full">
+                            <thead>
+                                <tr className="bg-base-200">
+                                    <th>Username</th>
+                                    <th>Role</th>
+                                    <th>Created At</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {users.slice(0, visibleCount).map(user => (
+                                    <tr key={user._id} className="hover">
+                                        <td className="font-medium text-base">{user.username}</td>
+                                        <td>
+                                            <div className={`badge ${user.role === 'admin' ? 'badge-primary' : 'badge-secondary'} badge-outline font-bold`}>
+                                                {user.role.toUpperCase()}
+                                            </div>
+                                        </td>
+                                        <td>{new Date(user.createdAt).toLocaleDateString()}</td>
+                                        <td className="space-x-2">
+                                            <button
+                                                className="btn btn-sm btn-info btn-outline"
+                                                onClick={() => handleEditClick(user)}
+                                            >
+                                                ✏️ Edit
+                                            </button>
+                                            <button
+                                                className="btn btn-sm btn-error btn-outline"
+                                                onClick={() => handleDeleteUser(user._id)}
+                                            >
+                                                🗑️ Delete
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
 
-            {/* Mobile Card View */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:hidden gap-4">
-                {users.slice(0, visibleCount).map(user => (
-                    <div key={user._id} className="card bg-base-100 shadow-md">
-                        <div className="card-body p-4">
-                            <div className="flex justify-between items-start">
-                                <h3 className="card-title text-lg">{user.username}</h3>
-                                <div className={`badge ${user.role === 'admin' ? 'badge-primary' : 'badge-secondary'} badge-outline`}>
-                                    {user.role.toUpperCase()}
+                    {/* Mobile Card View */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:hidden gap-4">
+                        {users.slice(0, visibleCount).map(user => (
+                            <div key={user._id} className="card bg-base-100 shadow-md">
+                                <div className="card-body p-4">
+                                    <div className="flex justify-between items-start">
+                                        <h3 className="card-title text-lg">{user.username}</h3>
+                                        <div className={`badge ${user.role === 'admin' ? 'badge-primary' : 'badge-secondary'} badge-outline`}>
+                                            {user.role.toUpperCase()}
+                                        </div>
+                                    </div>
+                                    <div className="text-sm opacity-70 mt-2">
+                                        <p>📅 Joined: {new Date(user.createdAt).toLocaleDateString()}</p>
+                                    </div>
+                                    <div className="card-actions justify-end mt-4">
+                                        <button
+                                            className="btn btn-sm btn-info btn-outline flex-1"
+                                            onClick={() => handleEditClick(user)}
+                                        >
+                                            ✏️ Edit
+                                        </button>
+                                        <button
+                                            className="btn btn-sm btn-error btn-outline flex-1"
+                                            onClick={() => handleDeleteUser(user._id)}
+                                        >
+                                            🗑️ Delete
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
-                            <div className="text-sm opacity-70 mt-2">
-                                <p>📅 Joined: {new Date(user.createdAt).toLocaleDateString()}</p>
-                            </div>
-                            <div className="card-actions justify-end mt-4">
-                                <button
-                                    className="btn btn-sm btn-info btn-outline flex-1"
-                                    onClick={() => handleEditClick(user)}
-                                >
-                                    ✏️ Edit
-                                </button>
-                                <button
-                                    className="btn btn-sm btn-error btn-outline flex-1"
-                                    onClick={() => handleDeleteUser(user._id)}
-                                >
-                                    🗑️ Delete
-                                </button>
-                            </div>
-                        </div>
+                        ))}
                     </div>
-                ))}
-            </div>
 
-            {users.length > 3 && (
-                <div className="flex justify-center mt-6 mb-8">
-                    {visibleCount < users.length ? (
-                        <button className="btn btn-outline btn-primary w-full md:w-auto" onClick={() => setVisibleCount(prev => prev + 3)}>
-                            View More Users
-                        </button>
-                    ) : (
-                        <button className="btn btn-outline w-full md:w-auto" onClick={() => setVisibleCount(3)}>
-                            Show Less
-                        </button>
+                    {users.length > 3 && (
+                        <div className="flex justify-center mt-6 mb-8">
+                            {visibleCount < users.length ? (
+                                <button className="btn btn-outline btn-primary w-full md:w-auto" onClick={() => setVisibleCount(prev => prev + 3)}>
+                                    View More Users
+                                </button>
+                            ) : (
+                                <button className="btn btn-outline w-full md:w-auto" onClick={() => setVisibleCount(3)}>
+                                    Show Less
+                                </button>
+                            )}
+                        </div>
                     )}
+                </>
+            )}
+
+            {!isLoading && users.length === 0 && (
+                <div className="text-center py-10 opacity-70">
+                    <p>No users found.</p>
                 </div>
             )}
 
