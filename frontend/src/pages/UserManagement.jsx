@@ -11,7 +11,8 @@ const UserManagement = () => {
         enrollmentNumber: '',
         email: '',
         contactNumber: '',
-        profilePhoto: ''
+        profilePhoto: '',
+        password: ''
     });
     const [visibleCount, setVisibleCount] = useState(3);
     const [searchTerm, setSearchTerm] = useState('');
@@ -84,7 +85,8 @@ const UserManagement = () => {
             enrollmentNumber: user.enrollmentNumber || '',
             email: user.email || '',
             contactNumber: user.contactNumber || '',
-            profilePhoto: user.profilePhoto || ''
+            profilePhoto: user.profilePhoto || '',
+            password: ''
         });
         document.getElementById('edit_user_modal').showModal();
     };
@@ -363,6 +365,19 @@ const UserManagement = () => {
                                 value={editFormData.contactNumber}
                                 onChange={handleEditChange}
                                 className="input input-bordered w-full"
+                            />
+                        </div>
+                        <div className="form-control">
+                            <label className="label">
+                                <span className="label-text">New Password (leave blank to keep current)</span>
+                            </label>
+                            <input
+                                type="password"
+                                name="password"
+                                value={editFormData.password || ''}
+                                onChange={handleEditChange}
+                                className="input input-bordered w-full"
+                                placeholder="Enter new password to change"
                             />
                         </div>
                         <div className="form-control">

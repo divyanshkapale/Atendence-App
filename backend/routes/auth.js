@@ -154,7 +154,7 @@ router.get('/users', authenticateToken, requireAdmin, async (req, res) => {
 router.put('/users/:id', authenticateToken, requireAdmin, async (req, res) => {
     try {
         const { id } = req.params;
-        const { username, enrollmentNumber, email, contactNumber, profilePhoto } = req.body;
+        const { username, enrollmentNumber, email, contactNumber, profilePhoto, password } = req.body;
         console.log(`Updating user with ID: ${id}`);
 
         const user = await User.findById(id);
@@ -176,6 +176,9 @@ router.put('/users/:id', authenticateToken, requireAdmin, async (req, res) => {
         user.contactNumber = contactNumber;
         if (profilePhoto) {
             user.profilePhoto = profilePhoto;
+        }
+        if (password && password.trim() !== '') {
+            user.password = password;
         }
 
         await user.save();
